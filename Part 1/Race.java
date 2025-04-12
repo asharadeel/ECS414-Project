@@ -1,41 +1,31 @@
-import javax.swing.*;
 import java.util.concurrent.TimeUnit;
 import java.lang.Math;
+import java.util.*;
 
 /**
  * A three-horse race, each horse running in its own lane
  * for a given distance
  *
  * @author McRaceface, ashar
- * @version 2
+ * @version 3
  */
 
 
 public class Race
 {
     private int raceLength;
-    private Horse lane1Horse;
-    private Horse lane2Horse;
-    private Horse lane3Horse;
+    private Horse[] raceHorses = new Horse[0];
 
-    //weather conditions
-    private boolean rain;
-    private boolean wind;
-    private boolean snow;
     /**
      * Constructor for objects of class Race
      * Initially there are no horses in the lanes
      *
      * @param distance the length of the racetrack (in metres/yards...)
      */
-
     public Race(int distance)
     {
         // initialise instance variables
         raceLength = distance;
-        lane1Horse = null;
-        lane2Horse = null;
-        lane3Horse = null;
     }
 
 
@@ -45,71 +35,107 @@ public class Race
      * @param theHorse the horse to be added to the race
      * @param laneNumber the lane that the horse will be added to
      */
-    public void addHorse(Horse theHorse, int laneNumber)
-    {
-        if (laneNumber == 1)
-        {
-            lane1Horse = theHorse;
-        }
-        else if (laneNumber == 2)
-        {
-            lane2Horse = theHorse;
-        }
-        else if (laneNumber == 3)
-        {
-            lane3Horse = theHorse;
-        }
-        else
-        {
-            System.out.println("Cannot add horse to lane " + laneNumber + " because there is no such lane");
-        }
+    public void addHorse(Horse theHorse, int laneNumber) {
+        raceHorses = appendValue(raceHorses,theHorse);
     }
 
+    /**
+     * Add a value to a classic array
+     * @param arr - The array to manipulate
+     * @param value - The value to add
+     * @return - return new size array
+     * @param <T> - made for any type for future use too
+     */
+    public <T> T[] appendValue (T[] arr, T value){
+        if (arr == null) {
+            throw new IllegalArgumentException("Input array cannot be null");
+        }
+
+        T[] newArray = Arrays.copyOf(arr, arr.length + 1);
+        newArray[arr.length] = value;
+        return newArray;
+    }
+
+    /**
+     * The main of this race
+     */
     public void startRace()
     {
-        GameStatistics stats = new GameStatistics(raceLength, lane1Horse, lane2Horse, lane3Horse);
-        //declare a local variable to tell us when the race is finished
+        //declare a local variable to tell us when the race is finished and a horse for the winner place
+        Horse winner = null;
         boolean finished = false;
 
-        //reset all the lanes (all horses not fallen and back to 0).
-        lane1Horse.goBackToStart();
-        lane2Horse.goBackToStart();
-        lane3Horse.goBackToStart();
+       Horse[] currentRace=  raceHorses; //make a copy of all the horses
 
+        //reset all horses to 0;
+        for(Horse x : currentRace){
+            x.goBackToStart();
+        }
+
+        //The race
         while (!finished)
         {
-            //move each horse
-            moveHorse(lane1Horse);
-            moveHorse(lane2Horse);
-            moveHorse(lane3Horse);
+            //move each horse IF still standing
+            for(Horse x: currentRace){
+                if(!x.hasFallen()) {
+                    moveHorse(x);
+                }
+            }
+
+            // Check race completion conditions
+            boolean allFell = true;
+            for (Horse x : raceHorses) {
+                if (raceWonBy(x)) {
+                    finished = true;
+                    winner = x;
+                    break;
+                }
+                if (!x.hasFallen()) {
+                    allFell = false;
+                }
+            }
+
+            // If all horses fell, end the race
+            if (allFell) {
+                finished = true;
+            }
 
             //print the race positions
             printRace();
-
-            stats.activeDetect();
-
-            finished = stats.isGameOver();
 
             //wait for 100 milliseconds
             try{
                 TimeUnit.MILLISECONDS.sleep(100);
             }catch(Exception e){}
+
         }
         if(finished){
-            //if any of the three horses has won the race is finished
-            if(stats.getWinner() != (null)) {
-                System.out.println("Game won by " + stats.getWinner().getName());
+            if(winner != null){
+                System.out.println("The winner is " + winner.getName() + ", " + winner.getSymbol() + "!");
             }
             else{
-                System.out.println("\nThey all fell...");
-            }
-
-            if(finished){
-                stats.gameFinished();
+                System.out.println("They all fell :/");
             }
         }
     }
 
+    /**
+     * Determines if a horse has won the race
+     *
+     * @param theHorse The horse we are testing
+     * @return true if the horse has won, false otherwise.
+     */
+    private boolean raceWonBy(Horse theHorse)
+    {
+        if (theHorse.getDistanceTravelled() == raceLength)
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
 
 
     /**
@@ -131,7 +157,6 @@ public class Race
                 theHorse.moveForward();
             }
 
-
             //the probability that the horse will fall is very small (max is 0.1)
             //but will also will depends exponentially on confidence
             //so if you double the confidence, the probability that it will fall is *2
@@ -139,9 +164,8 @@ public class Race
             if (Math.random() < (0.1*theHorse.getConfidence()*theHorse.getConfidence()))
             {
                 theHorse.fall();
+                System.out.println(theHorse.getName() + " has fallen!");
             }
-
-
         }
     }
 
@@ -156,14 +180,10 @@ public class Race
         multiplePrint('=',raceLength+3); //top edge of track
         System.out.println();
 
-        printLane(lane1Horse);
-        System.out.println();
-
-        printLane(lane2Horse);
-        System.out.println();
-
-        printLane(lane3Horse);
-        System.out.println();
+        for(int i =0; i<raceHorses.length; i++){
+            printLane(raceHorses[i]);
+            System.out.println();
+        }
 
         multiplePrint('=',raceLength+3); //bottom edge of track
         System.out.println();
