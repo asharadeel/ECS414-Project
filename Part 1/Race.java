@@ -116,6 +116,9 @@ public class Race
             else{
                 System.out.println("They all fell :/");
             }
+            UpdateConfidence(currentRace, winner);
+            FinishedRace(currentRace);
+
         }
     }
 
@@ -242,6 +245,33 @@ public class Race
         {
             System.out.print(aChar);
             i = i + 1;
+        }
+    }
+
+    /**
+     * Update the confidence of winning and loosing horses.
+     * @param RaceHorses tbe horses of the race
+     * @param Winner the winner of the race, if any
+     */
+    private void UpdateConfidence(Horse[] RaceHorses, Horse Winner){
+        if(Winner != (null)) { //not always a winner
+            double factor = Math.round(Math.random() * 0.1 * 100.0) / 100.0;
+            double winnersConf = Winner.getConfidence() + factor; //slight increase
+            Winner.setConfidence(winnersConf);
+        }
+
+        for (Horse x : RaceHorses) {
+            if(x != Winner && x != null) {
+                double factor = Math.round(Math.random() * 0.1 * 100.0) / 100.0;
+                double losersConf = x.getConfidence() - factor;
+                x.setConfidence(losersConf);
+            }
+        }
+    }
+
+    private void FinishedRace(Horse[] RaceHorses){
+        for (Horse x : RaceHorses) {
+            x.resetHorse();
         }
     }
 }

@@ -1,6 +1,7 @@
 
 /**
- * The horse class defining its attributes and methods
+ * Write a description of class Horse here.
+ *
  * @author ashar
  * @version 2.0.0
  */
@@ -114,5 +115,8 @@ public class Horse
         this.symbol = newSymbol;
     }
 
-
+    public void resetHorse(){
+        this.distance = 0;
+        this.fall = false;
+    }
 }

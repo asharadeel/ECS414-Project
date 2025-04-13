@@ -7,46 +7,65 @@ public class Main {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
 
-        //Ask the user if they want to start the race, with validation for answer
-        String askStart = input("Would you like to start a race? (Y/N)");
-        while (!askStart.equalsIgnoreCase("Y") && !askStart.equalsIgnoreCase("N")) {
-            askStart = input("Please choose between two options (Y/N)");
-        }
+        boolean sameHorses = false;
+        Horse[] repeatHorses = new Horse[0]; //for repeated races
 
+        //Ask the user if they want to start the race, with validation for answer
+        String askStart = Ask("Would you like to start a new race? [Y/N]",
+                new String[] {"Y","N"},
+                "Please choose a valid output");
 
         //Loop controls race
         while(askStart.equalsIgnoreCase("y")) {
+            Horse[] RaceHorses = repeatHorses; //current horses
+
             //Create race via method call
             Race r1 = CreateRace();
 
-            //Chose the number of horses for the race
-            int horses = 0;
-            boolean validLen = false;
-            do {
-                String horsesInp = input("How many horses? (2-10)");
-                try {
-                    horses = Integer.parseInt(horsesInp);
-                    if(horses >= 2 || horses <= 10) {
-                        validLen = true;
+            boolean laneChange = false;
+            if(!sameHorses) {
+                int horses = NOfHorses();
+
+                //Fill in information for the horse
+                Horse[] currentHorses = new Horse[horses];
+                do {
+                    for (int i = 0; i <= horses - 1; i++) {
+                        System.out.println("Horse " + (i + 1) + ": ");
+                        currentHorses[i] = CreateHorse();
                     }
-                } catch (NumberFormatException e) {
-                    System.out.println("Please enter a number between 2 and 10");
+                } while (IsSymbolDuplicate(currentHorses));
+
+                laneChange = true;
+                RaceHorses = currentHorses;
+            }
+            else{
+                Horse[] currentHorses = RaceHorses;
+
+                System.out.println("You have chosen the same horses for this race.");
+                for(int i = 0; i < currentHorses.length; i++) {
+                    System.out.println("Horse " + (i + 1) + ": " +
+                            currentHorses[i].getName() + ", " +
+                            currentHorses[i].getSymbol() + " " +
+                            currentHorses[i].getConfidence() + ".");
                 }
-            }while(!validLen);
 
+                String askLanes = Ask("Would you like to change lanes of any horses? (Y/N)",
+                        new String[] {"Y","N"},
+                        "Please choose a valid output");
 
-            //Fill in information for the horse
-            Horse[] RaceHorses = new Horse[horses];
-            do{
-                for(int i = 0; i <= horses-1; i++) {
-                    System.out.println("Horse " +  (i+1) + ": ");
-                    RaceHorses[i] = CreateHorse();
+                if(askLanes.equalsIgnoreCase("Y")) {
+                    laneChange = true;
                 }
-            } while(IsSymbolDuplicate(RaceHorses));
+                else{
+                    laneChange = false;
+                }
 
+                RaceHorses = currentHorses;
+            }
 
-            //Choose the Lanes of the horse
-            RaceHorses = ChooseLanes(RaceHorses);
+            if(laneChange) {
+                RaceHorses = ChooseLanes(RaceHorses);
+            }
 
             //Add the horses to the race
             for(int i = 0; i < RaceHorses.length; i++) {
@@ -58,13 +77,28 @@ public class Main {
 
 
             //At end of race, ask for next or terminate program.
+            askStart = Ask("Race Over, go again? [Y/N]",
+                    new String[] {"Y","N"},
+                    "Please choose a valid output");
+            //ask repeat
+            if(askStart.equalsIgnoreCase("y")) {
+               String askRepeat = Ask("Would you like to use same horses? (Y/N)",
+                        new String[] {"Y","N"},
+                        "Please choose a valid output");
 
-            askStart = input("Race Over. Go again? (Y/N)");
-            while (!askStart.equalsIgnoreCase("Y") && !askStart.equalsIgnoreCase("N")) {
-                askStart = input("Please choose between two options (Y/N)");
+                if(askRepeat.equalsIgnoreCase("y")) {
+                    sameHorses = true;
+                    repeatHorses = RaceHorses;
+                }
+                else{
+                    sameHorses = false;
+                }
+            }
+            //goodbye messages
+            else{
+                System.out.println("Thank you!");
             }
         }
-
     }
 
     /**
@@ -95,6 +129,42 @@ public class Main {
     public static String input(String x){
         System.out.println(x);
         return new Scanner(System.in).nextLine();
+    }
+
+
+    public static String Ask(String question, String[] answers, String response){
+        Scanner s = new Scanner(System.in);
+        while(true){
+            System.out.println(question);
+            String x = s.nextLine().trim();
+
+            for(String ans : answers){
+                if(ans.equalsIgnoreCase(x)){
+                    return x;
+                }
+            }
+            System.out.println(response);
+        }
+    }
+    /**
+     * Ask the Number of Horses for a race
+     * @return
+     */
+    public static int NOfHorses(){
+        do {
+            String horsesInp = input("How many horses? (2-10)");
+            try {
+                int horses = Integer.parseInt(horsesInp);
+                if(horses >= 2 && horses <= 10) {
+                    return horses;
+                }
+                else{
+                    System.out.println("Please enter a number between 2 and 10");
+                }
+            } catch (NumberFormatException e) {
+                System.out.println("Please enter a valid number between 2 and 10");
+            }
+        }while(true);
     }
 
     /**
@@ -222,4 +292,6 @@ public class Main {
 
         return newRaceHorses;
     }
+
+
 }
