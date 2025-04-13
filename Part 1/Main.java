@@ -1,8 +1,11 @@
 import java.util.*;
-import java.util.Scanner;
 
-//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
-// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
+/**
+ * Main Method to execute the Horse Race in terminal
+ *
+ * @author ashar
+ * @version 1.6
+ */
 public class Main {
     public static void main(String[] args) {
         Scanner s = new Scanner(System.in);
@@ -22,8 +25,12 @@ public class Main {
             //Create race via method call
             Race r1 = CreateRace();
 
+            //check for laneChange request
             boolean laneChange = false;
+
+            //check if previous horses are to be used
             if(!sameHorses) {
+                //ask for n of horses
                 int horses = NOfHorses();
 
                 //Fill in information for the horse
@@ -35,20 +42,26 @@ public class Main {
                     }
                 } while (IsSymbolDuplicate(currentHorses));
 
+                //lane change must occur since no initial lanes applied
                 laneChange = true;
+
+                //update horses to match modified ones
                 RaceHorses = currentHorses;
             }
+            //if same horses are used execute this block
             else{
                 Horse[] currentHorses = RaceHorses;
 
+                //remind user of the horses
                 System.out.println("You have chosen the same horses for this race.");
                 for(int i = 0; i < currentHorses.length; i++) {
                     System.out.println("Horse " + (i + 1) + ": " +
                             currentHorses[i].getName() + ", " +
                             currentHorses[i].getSymbol() + " " +
-                            currentHorses[i].getConfidence() + ".");
+                            currentHorses[i].getConfidence() + "."); //updated
                 }
 
+                //update lanes request
                 String askLanes = Ask("Would you like to change lanes of any horses? (Y/N)",
                         new String[] {"Y","N"},
                         "Please choose a valid output");
@@ -60,9 +73,12 @@ public class Main {
                     laneChange = false;
                 }
 
+
+                //update the race horses to match modified ones
                 RaceHorses = currentHorses;
             }
 
+            //if lane change request passed
             if(laneChange) {
                 RaceHorses = ChooseLanes(RaceHorses);
             }
@@ -74,7 +90,6 @@ public class Main {
 
             //Start thr Race
             r1.startRace();
-
 
             //At end of race, ask for next or terminate program.
             askStart = Ask("Race Over, go again? [Y/N]",
@@ -102,6 +117,40 @@ public class Main {
     }
 
     /**
+     * Simple input method using a scanner and printing message
+     * @param x
+     * @return
+     */
+    public static String input(String x){
+        System.out.println(x);
+        return new Scanner(System.in).nextLine();
+    }
+
+
+    /**
+     * Ask for an input, requiring specific answer
+     * @param question - the question to ask the user input for
+     * @param answers - potential answer/s that can be result
+     * @param response - repsonse for incorrect input
+     * @return - valid input passing tests
+     */
+    public static String Ask(String question, String[] answers, String response){
+        Scanner s = new Scanner(System.in);
+        while(true){
+            System.out.println(question);
+            String x = s.nextLine().trim();
+
+            for(String ans : answers){
+                if(ans.equalsIgnoreCase(x)){
+                    return x;
+                }
+            }
+            System.out.println(response);
+        }
+    }
+
+
+    /**
      * Check if the symbol of the horse is unique
      * @param symbols - Pass the horses array to be compared against eachother
      * @return - true if symbol is not unqiue, else false
@@ -122,33 +171,8 @@ public class Main {
     }
 
     /**
-     * Simple input method using a scanner and printing message
-     * @param x
-     * @return
-     */
-    public static String input(String x){
-        System.out.println(x);
-        return new Scanner(System.in).nextLine();
-    }
-
-
-    public static String Ask(String question, String[] answers, String response){
-        Scanner s = new Scanner(System.in);
-        while(true){
-            System.out.println(question);
-            String x = s.nextLine().trim();
-
-            for(String ans : answers){
-                if(ans.equalsIgnoreCase(x)){
-                    return x;
-                }
-            }
-            System.out.println(response);
-        }
-    }
-    /**
      * Ask the Number of Horses for a race
-     * @return
+     * @return - number of horses for the race
      */
     public static int NOfHorses(){
         do {

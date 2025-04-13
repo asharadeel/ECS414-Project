@@ -3,11 +3,10 @@ import java.lang.Math;
 import java.util.*;
 
 /**
- * A three-horse race, each horse running in its own lane
- * for a given distance
+ * A multi-horse (2-10) race
  *
  * @author McRaceface, ashar
- * @version 3
+ * @version 2.5
  */
 
 
@@ -116,6 +115,7 @@ public class Race
             else{
                 System.out.println("They all fell :/");
             }
+            //updates and modifications based on race finish
             UpdateConfidence(currentRace, winner);
             FinishedRace(currentRace);
 
@@ -183,9 +183,11 @@ public class Race
         multiplePrint('=',raceLength+3); //top edge of track
         System.out.println();
 
+
+        //print each horse
         for(int i =0; i<raceHorses.length; i++){
             printLane(raceHorses[i]);
-            System.out.println();
+            System.out.println(); //gap between horses
         }
 
         multiplePrint('=',raceLength+3); //bottom edge of track
@@ -269,7 +271,13 @@ public class Race
         }
     }
 
+    /**
+     * Method to execute at the end of any race
+     * @param RaceHorses
+     */
+
     private void FinishedRace(Horse[] RaceHorses){
+        //Reset horses
         for (Horse x : RaceHorses) {
             x.resetHorse();
         }

@@ -1,9 +1,9 @@
 
 /**
- * Write a description of class Horse here.
+ * The Horse Class object for the races
  *
  * @author ashar
- * @version 2.0.0
+ * @version 2.1
  */
 
 public class Horse
@@ -115,6 +115,9 @@ public class Horse
         this.symbol = newSymbol;
     }
 
+    /**
+     * reset the values of horse
+     */
     public void resetHorse(){
         this.distance = 0;
         this.fall = false;
