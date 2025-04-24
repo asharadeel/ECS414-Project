@@ -19,6 +19,8 @@ public class Race
     private Horse[] raceHorses = new Horse[0];
     JFrame RaceMenu;
     JPanel RacePanel;
+    GameStatistics stats = new GameStatistics(raceLength, raceHorses);
+
 
     /**
      * Constructor for objects of class Race
@@ -45,13 +47,15 @@ public class Race
 
     public void startRace() {
         RaceMenu = new JFrame("Race!");
-        RaceMenu.setSize(800, 600);
+        RaceMenu.setSize(1000, 250);
 
         RacePanel = new JPanel();
         RacePanel.setLayout(new BoxLayout(RacePanel, BoxLayout.Y_AXIS));
         JScrollPane scrollPane = new JScrollPane(RacePanel);
         RaceMenu.add(scrollPane);
         RaceMenu.setVisible(true);
+        RaceMenu.setLocationRelativeTo(null);
+
 
         // Reset all horses
         for(Horse x : raceHorses) {
@@ -80,6 +84,7 @@ public class Race
                     if (raceWonBy(x)) {
                         finished = true;
                         winner = x;
+                        stats.setWinner(x);
                         break;
                     }
                     if (!x.hasFallen()) allFell = false;

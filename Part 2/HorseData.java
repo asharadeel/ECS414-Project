@@ -2,6 +2,7 @@ public class HorseData extends Horse{
     private double averageSpeed;
     private double timeTaken;
     private boolean winner;
+    private boolean horseChecked;
 
 
     /**
@@ -10,6 +11,16 @@ public class HorseData extends Horse{
      */
     public HorseData(Horse horse) {
         super(horse.getSymbol(), horse.getName(), horse.getConfidence());
+    }
+
+    //ACCESSORS
+
+    /**
+     * Checks if the horse has been verified/inspected
+     * @return true if the horse has been checked, false otherwise
+     */
+    public boolean isHorseChecked() {
+        return this.horseChecked;
     }
 
     /**
@@ -35,7 +46,16 @@ public class HorseData extends Horse{
     public boolean isWinner() {
         return this.winner;
     }
-    
+
+    //MUTATORS
+
+    /**
+     * Sets the verification status of the horse
+     * @param horseChecked true if the horse has been verified, false otherwise
+     */
+    public void setHorseChecked(boolean horseChecked) {
+        this.horseChecked = horseChecked;
+    }
     /**
      * Sets the average speed of the horse
      * @param averageSpeed the average speed to set (in units per time)
