@@ -1,6 +1,9 @@
-import java.util.concurrent.TimeUnit;
-import java.lang.Math;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.*;
+import javax.swing.*;
+import javax.swing.Timer;
 
 /**
  * A multi-horse (2-10) race
@@ -14,7 +17,8 @@ public class Race
 {
     private int raceLength;
     private Horse[] raceHorses = new Horse[0];
-
+    JFrame RaceMenu;
+    JPanel RacePanel;
 
     /**
      * Constructor for objects of class Race
@@ -39,71 +43,68 @@ public class Race
         raceHorses = AALibrary.appendValue(raceHorses,theHorse);
     }
 
-    /**
-     * The main of this race
-     */
-    public void startRace()
-    {
-        //declare a local variable to tell us when the race is finished and a horse for the winner place
-        Horse winner = null;
-        boolean finished = false;
+    public void startRace() {
+        RaceMenu = new JFrame("Race!");
+        RaceMenu.setSize(800, 600);
 
-       Horse[] currentRace=  raceHorses; //make a copy of all the horses
+        RacePanel = new JPanel();
+        RacePanel.setLayout(new BoxLayout(RacePanel, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(RacePanel);
+        RaceMenu.add(scrollPane);
+        RaceMenu.setVisible(true);
 
-        //reset all horses to 0;
-        for(Horse x : currentRace){
-            x.goBackToStart();
+        // Reset all horses
+        for(Horse x : raceHorses) {
+            if(x != null) {
+                x.goBackToStart();
+            }
         }
 
-        //The race
-        while (!finished)
-        {
-            //move each horse IF still standing
-            for(Horse x: currentRace){
-                if(!x.hasFallen()) {
-                    moveHorse(x);
+        // Create a Swing Timer for animation
+        new Timer(100, new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                boolean finished = false;
+                Horse winner = null;
+
+                // Move each horse
+                for(Horse x : raceHorses) {
+                    if(x != null && !x.hasFallen()) {
+                        moveHorse(x);
+                    }
+                }
+
+                // Check race completion
+                boolean allFell = true;
+                for (Horse x : raceHorses) {
+                    if(x == null) continue;
+                    if (raceWonBy(x)) {
+                        finished = true;
+                        winner = x;
+                        break;
+                    }
+                    if (!x.hasFallen()) allFell = false;
+                }
+
+                // Update display
+                printRace();
+                RacePanel.revalidate();
+                RacePanel.repaint();
+
+                // Check if race finished
+                if (finished || allFell) {
+                    ((Timer)e.getSource()).stop();
+                    if(winner != null) {
+                        JOptionPane.showMessageDialog(RaceMenu,
+                                "The winner is " + winner.getName() + "!");
+                    } else {
+                        JOptionPane.showMessageDialog(RaceMenu,
+                                "All horses fell!");
+                    }
+                    UpdateConfidence(raceHorses, winner);
+                    FinishedRace(raceHorses);
                 }
             }
-
-            // Check race completion conditions
-            boolean allFell = true;
-            for (Horse x : raceHorses) {
-                if (raceWonBy(x)) {
-                    finished = true;
-                    winner = x;
-                    break;
-                }
-                if (!x.hasFallen()) {
-                    allFell = false;
-                }
-            }
-
-            // If all horses fell, end the race
-            if (allFell) {
-                finished = true;
-            }
-
-            //print the race positions
-            printRace();
-
-            //wait for 100 milliseconds
-            try{
-                TimeUnit.MILLISECONDS.sleep(100);
-            }catch(Exception e){}
-
-        }
-        if(finished){
-            if(winner != null){
-                System.out.println("The winner is " + winner.getName() + ", " + winner.getSymbol() + "!");
-            }
-            else{
-                System.out.println("They all fell :/");
-            }
-            //updates and modifications based on race finish
-            UpdateConfidence(currentRace, winner);
-            FinishedRace(currentRace);
-
-        }
+        }).start();
     }
 
     /**
@@ -160,22 +161,45 @@ public class Race
     /***
      * Print the race on the terminal
      */
-    private void printRace()
-    {
-        System.out.print('\u000C');  //clear the terminal window
+    private void printRace() {
+        RacePanel.removeAll(); // Clear previous content
+        RacePanel.setLayout(new BoxLayout(RacePanel, BoxLayout.Y_AXIS));
 
-        multiplePrint('=',raceLength+3); //top edge of track
-        System.out.println();
+        // Add top border
+        RacePanel.add(new JLabel(new String(new char[raceLength+3]).replace('\0', '=')));
 
-
-        //print each horse
-        for(int i =0; i<raceHorses.length; i++){
-            printLane(raceHorses[i]);
-            System.out.println(); //gap between horses
+        // Print each horse's lane
+        for(int i = 0; i < raceHorses.length; i++) {
+            if(raceHorses[i] != null) {
+                JLabel laneLabel = new JLabel(getLaneString(raceHorses[i]));
+                laneLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+                RacePanel.add(laneLabel);
+            } else {
+                RacePanel.add(new JLabel(" ")); // Empty space for null horses
+            }
         }
 
-        multiplePrint('=',raceLength+3); //bottom edge of track
-        System.out.println();
+        // Add bottom border
+        RacePanel.add(new JLabel(new String(new char[raceLength+3]).replace('\0', '=')));
+
+        RacePanel.revalidate();
+        RacePanel.repaint();
+    }
+
+    private String getLaneString(Horse theHorse) {
+        int spacesBefore = theHorse.getDistanceTravelled();
+        int spacesAfter = raceLength - theHorse.getDistanceTravelled();
+
+        StringBuilder lane = new StringBuilder();
+        lane.append('|');
+        lane.append(new String(new char[spacesBefore]).replace('\0', ' '));
+        lane.append(theHorse.hasFallen() ? '☠' : theHorse.getSymbol());
+        lane.append(new String(new char[spacesAfter]).replace('\0', ' '));
+        lane.append('|');
+        lane.append(" ").append(theHorse.getName())
+                .append(" (Confidence: ").append(String.format("%.2f", theHorse.getConfidence())).append(")");
+
+        return lane.toString();
     }
 
     /**
@@ -263,7 +287,9 @@ public class Race
     private void FinishedRace(Horse[] RaceHorses){
         //Reset horses
         for (Horse x : RaceHorses) {
-            x.resetHorse();
+            if(x != null) {
+                x.resetHorse();
+            }
         }
     }
 }

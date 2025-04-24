@@ -12,34 +12,92 @@ public class GetRaceInfoUI {
     static JFrame mainFrame;
 
     public static void showUI(){
-        mainFrame = new JFrame("Horse Creator");
+        mainFrame = new JFrame("Horse Creator") {
+            private Image backgroundImage;
+
+            {
+                try {
+                    backgroundImage = new ImageIcon("images/racingGrid.jpg").getImage();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+
+                // Set the content pane to be a custom JPanel with the background
+                setContentPane(new JPanel() {
+                    @Override
+                    protected void paintComponent(Graphics g) {
+                        super.paintComponent(g);
+                        if (backgroundImage != null) {
+                            int imgWidth = backgroundImage.getWidth(this);
+                            int imgHeight = backgroundImage.getHeight(this);
+
+                            int tilesX = (int) Math.ceil((double) getWidth() / imgWidth);
+                            int tilesY = (int) Math.ceil((double) getHeight() / imgHeight);
+
+                            for (int y = 0; y < tilesY; y++) {
+                                for (int x = 0; x < tilesX; x++) {
+                                    g.drawImage(backgroundImage,
+                                            x * imgWidth,
+                                            y * imgHeight,
+                                            this);
+                                }
+                            }
+
+                            g.setColor(new Color(0, 0, 0, 150));
+                            g.fillRect(0, 0, getWidth(), getHeight());
+                        }
+                    }
+                });
+            }
+        };
         mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        mainFrame.setSize(900, 250);
+        mainFrame.setSize(900, 400);
         mainFrame.setLayout(new BorderLayout());
+
 
         initializeModels();
 
+        // Create title panel
+        JPanel titlePanel = new JPanel();
+        titlePanel.setOpaque(false); // Make transparent to see background
+        JLabel titleLabel = new JLabel("Create Race Elements");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
+        titleLabel.setForeground(Color.white);
+        titlePanel.add(titleLabel);
+
+
+        //CREATE HORSE PANEL
         JPanel createHorse = new JPanel();
-        createHorse.setBorder(BorderFactory.createTitledBorder("CreateHorse"));
+
+        createHorse.setBorder(BorderFactory.createTitledBorder("#-#-#-#"));
         createHorse.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
+        createHorse.setOpaque(false);
 
         JComboBox<Integer> laneDropdown = new JComboBox<>(laneModel);
-        createHorse.add(new JLabel("Lane:"));
+        JLabel laneLabel = new JLabel("Lane:");
+        laneLabel.setForeground(Color.WHITE);
+        createHorse.add(laneLabel);
         createHorse.add(laneDropdown);
 
         JComboBox<Character> iconDropdown = new JComboBox<>(iconModel);
-        createHorse.add(new JLabel("Icon:"));
+        JLabel SymbolLabel = new JLabel("Symbol:");
+        SymbolLabel.setForeground(Color.WHITE);
+        createHorse.add(SymbolLabel);
         createHorse.add(iconDropdown);
 
         JTextField nameField = new JTextField(15);
-        createHorse.add(new JLabel("Name (3-20 chars):"));
+        JLabel NameLabel = new JLabel("Name:");
+        NameLabel.setForeground(Color.WHITE);
+        createHorse.add(NameLabel);
         createHorse.add(nameField);
 
         JSlider confidenceSlider = new JSlider(1, 99, 50);
         confidenceSlider.setMajorTickSpacing(25);
         confidenceSlider.setPaintTicks(true);
         confidenceSlider.setPaintLabels(true);
-        createHorse.add(new JLabel("Confidence:"));
+        JLabel ConfidenceLabel = new JLabel("Confidence:");
+        ConfidenceLabel.setForeground(Color.WHITE);
+        createHorse.add(ConfidenceLabel);
         createHorse.add(confidenceSlider);
 
         JTextArea outputArea = new JTextArea(4, 60);
@@ -47,9 +105,26 @@ public class GetRaceInfoUI {
         JScrollPane scrollPane = new JScrollPane(outputArea);
 
         JPanel buttonPanel = new JPanel();
+
         JButton submitButton = new JButton("Submit");
+        submitButton.setPreferredSize(new Dimension(150, 40));
+        submitButton.setBackground(Color.BLACK);
+        submitButton.setForeground(Color.WHITE);
+        submitButton.setFont(new Font("Helvetica", Font.BOLD, 12));
+
         JButton clearAllButton = new JButton("Clear All");
+        clearAllButton.setPreferredSize(new Dimension(150, 40));
+        clearAllButton.setBackground(Color.BLACK);
+        clearAllButton.setForeground(Color.WHITE);
+        clearAllButton.setFont(new Font("Helvetica", Font.BOLD, 12));
+
+
         JButton doneButton = new JButton("Done");
+        doneButton.setPreferredSize(new Dimension(150, 40));
+        doneButton.setBackground(Color.BLACK);
+        doneButton.setForeground(Color.WHITE);
+        doneButton.setFont(new Font("Helvetica", Font.BOLD, 12));
+
 
         submitButton.addActionListener(e -> {
             try {
@@ -111,8 +186,37 @@ public class GetRaceInfoUI {
                         new Object[]{"Close"},
                         "Close");
             } else {
+                // Create a panel to display horse information
+                JPanel confirmationPanel = new JPanel(new BorderLayout(10, 10));
+                confirmationPanel.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+
+                // Add confirmation question
+                JLabel questionLabel = new JLabel("Confirm horses and proceed?");
+                questionLabel.setFont(questionLabel.getFont().deriveFont(Font.BOLD));
+                confirmationPanel.add(questionLabel, BorderLayout.NORTH);
+
+                // Create text area for horse info
+                JTextArea horsesTextArea = new JTextArea();
+                horsesTextArea.setEditable(false);
+                horsesTextArea.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+
+                // Build the horse info string
+                StringBuilder horsesInfo = new StringBuilder("Final Horses:\n\n");
+                for (int i = 0; i < finalHorses.length; i++) {
+                    Horse h = finalHorses[i];
+                    if (h != null) {
+                        horsesInfo.append(String.format("Lane %d: %s (%s) - Confidence: %.2f%n",
+                                i+1, h.getName(), h.getSymbol(), h.getConfidence()));
+                    }
+                }
+                horsesTextArea.setText(horsesInfo.toString());
+
+                // Add scroll pane with horse info
+                confirmationPanel.add(new JScrollPane(horsesTextArea), BorderLayout.CENTER);
+
+                // Show the dialog with the custom panel
                 int choice = JOptionPane.showOptionDialog(mainFrame,
-                        "Confirm horses and proceed?",
+                        confirmationPanel,  // Our custom panel
                         "Confirmation",
                         JOptionPane.YES_NO_OPTION,
                         JOptionPane.QUESTION_MESSAGE,
@@ -122,20 +226,27 @@ public class GetRaceInfoUI {
 
                 if (choice == JOptionPane.YES_OPTION) {
                     mainFrame.dispose();
-                    printFinalHorses();
+                    printFinalHorses();  // Still print to console if needed
                     Main.startRace(finalHorses);
                 }
             }
         });
 
+        buttonPanel.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
         buttonPanel.add(submitButton);
         buttonPanel.add(clearAllButton);
         buttonPanel.add(doneButton);
 
-        mainFrame.add(createHorse, BorderLayout.NORTH);
-        mainFrame.add(buttonPanel, BorderLayout.CENTER);
-        mainFrame.add(scrollPane, BorderLayout.SOUTH);
+        // Create a main content panel
+        JPanel contentPanel = new JPanel(new BorderLayout());
+        contentPanel.setOpaque(false);
+        contentPanel.add(createHorse, BorderLayout.CENTER);
+        contentPanel.add(scrollPane, BorderLayout.SOUTH);
 
+
+        mainFrame.add(titlePanel, BorderLayout.NORTH);
+        mainFrame.add(contentPanel, BorderLayout.CENTER);
+        mainFrame.add(buttonPanel, BorderLayout.SOUTH);
         mainFrame.pack();
         mainFrame.setLocationRelativeTo(null);
         mainFrame.setVisible(true);
@@ -150,7 +261,7 @@ public class GetRaceInfoUI {
     }
 
     private static void printFinalHorses() {
-        System.out.println("\nFinal Horses by Lane:");
+        System.out.println("\nHorses by :");
         for (int i = 0; i < finalHorses.length; i++) {
             Horse h = finalHorses[i];
             if (h != null) {
@@ -159,7 +270,6 @@ public class GetRaceInfoUI {
             }
         }
     }
-
 
 
     private static void initializeModels() {

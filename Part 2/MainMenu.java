@@ -7,7 +7,9 @@ public class MainMenu {
     public static void showUI() {
         JFrame MainMenu = new JFrame("HorseRacer");
         MainMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        MainMenu.setSize(500, 500);
+        MainMenu.setSize(900, 400);
+        MainMenu.setLocationRelativeTo(null);
+
 
         // Create a background panel with image
         JPanel backgroundPanel = new JPanel(new BorderLayout()) {
@@ -39,10 +41,15 @@ public class MainMenu {
         centerPanel.setOpaque(false);
 
         // Main Title
-        JLabel Title = new JLabel("HorseRacer I");
-        Title.setFont(new Font("Arial", Font.BOLD, 24));
-        Title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        Title.setForeground(Color.WHITE);
+        // Replace the text label with an image logo
+        ImageIcon logoIcon = new ImageIcon("Images/logo.png");
+        JLabel titleLogo = new JLabel(logoIcon);
+        titleLogo.setAlignmentX(Component.CENTER_ALIGNMENT);
+
+// If you need to resize the image to fit better:
+        Image originalImage = logoIcon.getImage();
+        Image scaledImage = originalImage.getScaledInstance(400, -1, Image.SCALE_SMOOTH); // 300px width, maintain aspect ratio
+        titleLogo.setIcon(new ImageIcon(scaledImage));
 
         // Caption
         JLabel caption = new JLabel("Welcome to horse racer! Press \"Start\" to begin.");
@@ -51,7 +58,11 @@ public class MainMenu {
         caption.setForeground(Color.WHITE);
 
         centerPanel.add(Box.createVerticalGlue());
-        centerPanel.add(Title);
+        centerPanel.add(Box.createVerticalGlue());
+        centerPanel.add(titleLogo);  // This replaces the old Title JLabel
+        centerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
+        centerPanel.add(caption);
+        centerPanel.add(Box.createVerticalGlue());
         centerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         centerPanel.add(caption);
         centerPanel.add(Box.createVerticalGlue());
