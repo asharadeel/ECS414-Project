@@ -9,225 +9,41 @@ import javax.swing.*;
  * @version 1.6
  */
 public class Main {
+    static Horse[] raceHorses; // Stores horses from GetRaceInfoUI
+
+
     public static void main(String[] args) {
+
+
         Scanner s = new Scanner(System.in);
 
         boolean sameHorses = false;
         Horse[] repeatHorses = new Horse[0]; //for repeated races
 
-        JFrame MainMenu = new JFrame("HorseRacer");
-        MainMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        MainMenu.setSize(500, 500);
 
-        // Create a background panel with image
-        JPanel backgroundPanel = new JPanel(new BorderLayout()) {
-            private Image backgroundImage;
+        MainMenu.showUI();
 
-            {
-                // Load the image from the images folder
-                try {
-                    backgroundImage = new ImageIcon("images/mainMenuBackground.jpg").getImage();
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+    }
+
+    // Called when GetRaceInfoUI confirms horses
+    public static void startRace(Horse[] horses) {
+        raceHorses = horses;
+        System.out.println("Race started with horses:");
+        Race race = new Race(100);
+
+        int pos = 0;
+        for (Horse horse : raceHorses) {
+            if (horse != null) {
+                System.out.println(horse.getName());
+                race.addHorse(horse,pos+1);
             }
-
-            @Override
-            protected void paintComponent(Graphics g) {
-                super.paintComponent(g);
-                if (backgroundImage != null) {
-                    // Scale image to fit the panel
-                    g.drawImage(backgroundImage, 0, 0, getWidth(), getHeight(), this);
-                    g.setColor(new Color(0, 0, 0, 150));
-                    g.fillRect(0, 0, getWidth(), getHeight());
-                }
-            }
-        };
-        MainMenu.setContentPane(backgroundPanel);
-
-        // CENTER Panel - for title and caption
-        JPanel centerPanel = new JPanel();
-        centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
-        centerPanel.setOpaque(false); // Make panel transparent
-
-        // Main Title
-        JLabel Title = new JLabel("HorseRacer I");
-        Title.setFont(new Font("Arial", Font.BOLD, 24));
-        Title.setAlignmentX(Component.CENTER_ALIGNMENT);
-        Title.setForeground(Color.WHITE);
-
-        // Caption
-        JLabel caption = new JLabel("Welcome to horse racer! Press \"Start\" to begin.");
-        caption.setFont(new Font("Arial", Font.PLAIN, 12));
-        caption.setAlignmentX(Component.CENTER_ALIGNMENT);
-        caption.setForeground(Color.WHITE);
-
-        // Add vertical glue to push content to center
-        centerPanel.add(Box.createVerticalGlue());
-        centerPanel.add(Title);
-        centerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
-        centerPanel.add(caption);
-        centerPanel.add(Box.createVerticalGlue());
-
-        backgroundPanel.add(centerPanel, BorderLayout.CENTER);
-
-        // Bottom Panel - for buttons
-        JPanel BottomSection = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
-        BottomSection.setOpaque(false); // Make panel transparent
-        BottomSection.setBorder(BorderFactory.createEmptyBorder(0, 0, 30, 0)); // Add bottom padding
-
-        JButton StartRacer = new JButton("Start Racer");
-        StartRacer.setPreferredSize(new Dimension(150, 40));
-        StartRacer.setBackground(Color.BLACK);
-        StartRacer.setForeground(Color.WHITE);
-
-        JButton CloseMM = new JButton("Close");
-        CloseMM.setPreferredSize(new Dimension(150, 40));
-        CloseMM.setBackground(Color.WHITE);
-        CloseMM.setForeground(Color.BLACK);
-
-        BottomSection.add(StartRacer);
-        BottomSection.add(CloseMM);
-        backgroundPanel.add(BottomSection, BorderLayout.SOUTH);
-
-        MainMenu.setVisible(true);
-
-
-        //Ask the user if they want to start the race, with validation for answer
-        String askStart = Ask("Would you like to start a new race? [Y/N]",
-                new String[] {"Y","N"},
-                "Please choose a valid output");
-
-        //Loop controls race
-        while(askStart.equalsIgnoreCase("y")) {
-            Horse[] RaceHorses = repeatHorses; //current horses
-
-            //Create race via method call
-            Race r1 = CreateRace();
-
-            //check for laneChange request
-            boolean laneChange = false;
-
-            //check if previous horses are to be used
-            if(!sameHorses) {
-                //ask for n of horses
-                int horses = NOfHorses();
-
-                //Fill in information for the horse
-                Horse[] currentHorses = new Horse[horses];
-                do {
-                    for (int i = 0; i <= horses - 1; i++) {
-                        System.out.println("Horse " + (i + 1) + ": ");
-                        currentHorses[i] = CreateHorse();
-                    }
-                } while (IsSymbolDuplicate(currentHorses));
-
-                //lane change must occur since no initial lanes applied
-                laneChange = true;
-
-                //update horses to match modified ones
-                RaceHorses = currentHorses;
-            }
-            //if same horses are used execute this block
-            else{
-                Horse[] currentHorses = RaceHorses;
-
-                //remind user of the horses
-                System.out.println("You have chosen the same horses for this race.");
-                for(int i = 0; i < currentHorses.length; i++) {
-                    System.out.println("Horse " + (i + 1) + ": " +
-                            currentHorses[i].getName() + ", " +
-                            currentHorses[i].getSymbol() + " " +
-                            currentHorses[i].getConfidence() + "."); //updated
-                }
-
-                //update lanes request
-                String askLanes = Ask("Would you like to change lanes of any horses? (Y/N)",
-                        new String[] {"Y","N"},
-                        "Please choose a valid output");
-
-                if(askLanes.equalsIgnoreCase("Y")) {
-                    laneChange = true;
-                }
-                else{
-                    laneChange = false;
-                }
-
-
-                //update the race horses to match modified ones
-                RaceHorses = currentHorses;
-            }
-
-            //if lane change request passed
-            if(laneChange) {
-                RaceHorses = ChooseLanes(RaceHorses);
-            }
-
-            //Add the horses to the race
-            for(int i = 0; i < RaceHorses.length; i++) {
-                r1.addHorse(RaceHorses[i],i+1);
-            }
-
-            //Start thr Race
-            r1.startRace();
-
-            //At end of race, ask for next or terminate program.
-            askStart = Ask("Race Over, go again? [Y/N]",
-                    new String[] {"Y","N"},
-                    "Please choose a valid output");
-            //ask repeat
-            if(askStart.equalsIgnoreCase("y")) {
-               String askRepeat = Ask("Would you like to use same horses? (Y/N)",
-                        new String[] {"Y","N"},
-                        "Please choose a valid output");
-
-                if(askRepeat.equalsIgnoreCase("y")) {
-                    sameHorses = true;
-                    repeatHorses = RaceHorses;
-                }
-                else{
-                    sameHorses = false;
-                }
-            }
-            //goodbye messages
-            else{
-                System.out.println("Thank you!");
-            }
+            pos++;
         }
-    }
 
-    /**
-     * Simple input method using a scanner and printing message
-     * @param x
-     * @return
-     */
-    public static String input(String x){
-        System.out.println(x);
-        return new Scanner(System.in).nextLine();
+        race.startRace();
     }
 
 
-    /**
-     * Ask for an input, requiring specific answer
-     * @param question - the question to ask the user input for
-     * @param answers - potential answer/s that can be result
-     * @param response - repsonse for incorrect input
-     * @return - valid input passing tests
-     */
-    public static String Ask(String question, String[] answers, String response){
-        Scanner s = new Scanner(System.in);
-        while(true){
-            System.out.println(question);
-            String x = s.nextLine().trim();
-
-            for(String ans : answers){
-                if(ans.equalsIgnoreCase(x)){
-                    return x;
-                }
-            }
-            System.out.println(response);
-        }
-    }
 
 
     /**
@@ -256,7 +72,7 @@ public class Main {
      */
     public static int NOfHorses(){
         do {
-            String horsesInp = input("How many horses? (2-10)");
+            String horsesInp = AALibrary.input("How many horses? (2-10)");
             try {
                 int horses = Integer.parseInt(horsesInp);
                 if(horses >= 2 && horses <= 10) {
@@ -276,7 +92,7 @@ public class Main {
      * @return
      */
     public static Race CreateRace(){
-        String rlenInp = input("Please enter the length of the race (50 - 150): ");
+        String rlenInp = AALibrary.input("Please enter the length of the race (50 - 150): ");
         do{
             try{
                 int rlen = Integer.parseInt(rlenInp);
@@ -290,7 +106,7 @@ public class Main {
             catch(NumberFormatException e){
                 System.out.println("Error: Please enter a valid integer. ");
             }
-            rlenInp = input("Please enter the length of the race (50 - 150): ");
+            rlenInp = AALibrary.input("Please enter the length of the race (50 - 150): ");
         }while(true);
     }
 
@@ -300,14 +116,14 @@ public class Main {
      */
     public static Horse CreateHorse(){
         //DECLARATIONS
-        String name = input("Horse Name (String): ");
+        String name = AALibrary.input("Horse Name (String): ");
         char symbol = '#'; //default
         double conf = 0.0;
 
         //symbol capture
         boolean validSymbol = false;
         do{
-            String symbolInput = input("Horse Symbol (Character): ");
+            String symbolInput = AALibrary.input("Horse Symbol (Character): ");
             if(symbolInput.length() == 1){
                 symbol = symbolInput.charAt(0);
                 validSymbol = true;
@@ -320,7 +136,7 @@ public class Main {
         //confidence capture
         boolean validConf = false;
         do {
-            String confInp = input("Horse Confidence (0-1) : ");
+            String confInp = AALibrary.input("Horse Confidence (0-1) : ");
             try {
                 conf = Double.parseDouble(confInp);
                 if (conf > 0 && conf < 1) {
@@ -347,7 +163,7 @@ public class Main {
         for (int i = 0; i < RaceHorses.length; i++) {
             boolean validInp = false;
             do {
-                String laneInp = input("Choose lane (1-" + (RaceHorses.length) +
+                String laneInp = AALibrary.input("Choose lane (1-" + (RaceHorses.length) +
                         ") for " + RaceHorses[i].getName() + ": ");
                 try {
                     int chosenLane = Integer.parseInt(laneInp) - 1;
@@ -396,6 +212,8 @@ public class Main {
 
         return newRaceHorses;
     }
+
+
 
 
 }

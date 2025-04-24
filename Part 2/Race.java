@@ -15,6 +15,8 @@ public class Race
     private int raceLength;
     private Horse[] raceHorses = new Horse[0];
 
+    
+
     /**
      * Constructor for objects of class Race
      * Initially there are no horses in the lanes
@@ -35,24 +37,7 @@ public class Race
      * @param laneNumber the lane that the horse will be added to
      */
     public void addHorse(Horse theHorse, int laneNumber) {
-        raceHorses = appendValue(raceHorses,theHorse);
-    }
-
-    /**
-     * Add a value to a classic array
-     * @param arr - The array to manipulate
-     * @param value - The value to add
-     * @return - return new size array
-     * @param <T> - made for any type for future use too
-     */
-    public <T> T[] appendValue (T[] arr, T value){
-        if (arr == null) {
-            throw new IllegalArgumentException("Input array cannot be null");
-        }
-
-        T[] newArray = Arrays.copyOf(arr, arr.length + 1);
-        newArray[arr.length] = value;
-        return newArray;
+        raceHorses = AALibrary.appendValue(raceHorses,theHorse);
     }
 
     /**
