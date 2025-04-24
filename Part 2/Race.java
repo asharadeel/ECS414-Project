@@ -15,7 +15,6 @@ public class Race
     private int raceLength;
     private Horse[] raceHorses = new Horse[0];
 
-    
 
     /**
      * Constructor for objects of class Race
