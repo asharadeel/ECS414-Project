@@ -1,3 +1,4 @@
+import java.awt.*;
 import java.util.Arrays;
 import java.util.Scanner;
 
@@ -53,5 +54,68 @@ public class AALibrary {
             }
             System.out.println(response);
         }
+    }
+
+    public static Color getColorFromString(String colorName) {
+        if (colorName == null) return Color.WHITE; // Default fallback
+
+        switch (colorName.toUpperCase()) {
+            case "RED":     return Color.RED;
+            case "GREEN":   return Color.GREEN;
+            case "BLUE":    return Color.BLUE;
+            case "WHITE":   return Color.WHITE;
+            case "BLACK":   return Color.BLACK;
+            case "CYAN":    return Color.CYAN;
+            case "MAGENTA": return Color.MAGENTA;
+            case "PINK":    return Color.PINK;
+            default:        return Color.WHITE; // Fallback
+        }
+    }
+
+    public static void printHorses(Horse[] h){
+        int count = 1;
+        System.out.println("HORSES ARRAY ---------");
+        if (h == null) {
+            System.out.println("Array is null!");
+            return;
+        }
+
+        for(Horse x : h){
+            System.out.print("\n " +
+                    count + "= " +
+                    " Name: " + x.getName() +
+                    " Symbol: " + x.getSymbol() +
+                    " Confidence: " + x.getConfidence());
+        }
+    }
+
+    public static void printHorses(HorseData[] h){
+        System.out.println("DETAILED HORSES ARRAY -----------------------");
+        int count = 1;
+
+        if (h == null) {
+            System.out.println("Array is null!");
+            return;
+        }
+
+        for(HorseData x : h) {
+            if (x != null) {
+                    System.out.print("\n" +
+                            count + "= " +
+                            " Name: " + x.getName() +
+                            " Symbol: " + x.getSymbol() +
+                            " Confidence: " + x.getConfidence() +
+                            " | Distance Travelled: " + x.getDistanceTravelled() +
+                            " | AvgSpeed: " + x.getAverageSpeed() +
+                            " | Time Taken: " + x.getTimeTaken() +
+                            " | Checked?: " + x.isHorseChecked() +
+                            " | Winner?: " + x.isWinner());
+            }
+            else {
+                System.out.println(count + " = null index");
+            }
+            count++;
+        }
+        System.out.println("----------------------------------------------");
     }
 }

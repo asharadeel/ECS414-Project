@@ -1,4 +1,5 @@
 import javax.swing.*;
+import javax.swing.border.*;
 import java.awt.*;
 import java.util.Arrays;
 
@@ -7,8 +8,12 @@ public class GetRaceInfoUI {
     static Horse[] finalHorses = new Horse[10];
     static Character[] horseIcons = {'♔','♕','♖','♗','♘','♚','♛','♜','♝','♞'};
     static Integer[] lanes = {1,2,3,4,5,6,7,8,9,10};
+    static String[] colours = {"WHITE","BLACK","RED","GREEN","BLUE","CYAN","MAGNETA","PINK"};
     static DefaultComboBoxModel<Character> iconModel;
     static DefaultComboBoxModel<Integer> laneModel;
+    static DefaultComboBoxModel<String> colourModel;
+    static DefaultComboBoxModel<String> fontColourModel;
+
     static JFrame mainFrame;
 
     public static void showUI(){
@@ -66,10 +71,20 @@ public class GetRaceInfoUI {
         titlePanel.add(titleLabel);
 
 
-        //CREATE HORSE PANEL
+        // CREATE HORSE PANEL
         JPanel createHorse = new JPanel();
 
-        createHorse.setBorder(BorderFactory.createTitledBorder("#-#-#-#"));
+        TitledBorder CHborder = BorderFactory.createTitledBorder(
+                BorderFactory.createEtchedBorder(),  // Base border style
+                "Create Horse:",                    // Initial title text
+                TitledBorder.LEFT,                  // Title alignment
+                TitledBorder.TOP                    // Title position
+        );
+        CHborder.setTitleColor(Color.WHITE);
+        CHborder.setTitleFont(new Font("Segoe UI", Font.ITALIC, 14));
+        createHorse.setBorder(CHborder);
+        createHorse.repaint();
+
         createHorse.setLayout(new FlowLayout(FlowLayout.LEFT, 10, 5));
         createHorse.setOpaque(false);
 
@@ -103,6 +118,51 @@ public class GetRaceInfoUI {
         JTextArea outputArea = new JTextArea(4, 60);
         outputArea.setEditable(false);
         JScrollPane scrollPane = new JScrollPane(outputArea);
+
+        //Customise Race Panel
+        JPanel customiseRace = new JPanel();
+
+        TitledBorder CRBorder = BorderFactory.createTitledBorder(
+                BorderFactory.createEtchedBorder(),  // Base border style
+                "Customise Race:",                    // Initial title text
+                TitledBorder.LEFT,                  // Title alignment
+                TitledBorder.TOP                    // Title position
+        );
+        CRBorder.setTitleColor(Color.WHITE);
+        CRBorder.setTitleFont(new Font("Segoe UI", Font.ITALIC, 14));
+        customiseRace.setBorder(CRBorder);
+        customiseRace.repaint();
+
+        customiseRace.setOpaque(false);
+        customiseRace.setLayout(new FlowLayout(FlowLayout.LEFT,10,5));
+
+
+
+        JComboBox<String> colourDropdown = new JComboBox<>(colourModel);
+        JLabel colourLabel = new JLabel("Background Colour: ");
+        colourLabel.setForeground(Color.white);
+        colourDropdown.setSelectedIndex(0);
+        customiseRace.add(colourLabel);
+        customiseRace.add(colourDropdown);
+
+        JComboBox<String> fontColourDropdown = new JComboBox<>(fontColourModel);
+        fontColourDropdown.setSelectedIndex(1);
+        JLabel fontColourLabel = new JLabel("Text Colour: ");
+        fontColourLabel.setForeground(Color.white);
+        customiseRace.add(fontColourLabel);
+        customiseRace.add(fontColourDropdown);
+
+        JSlider raceLengthField =  new JSlider(50,150,100);
+        raceLengthField.setMajorTickSpacing(25);
+        raceLengthField.setPaintTicks(true);
+        raceLengthField.setPaintLabels(true);
+        JLabel raceLengthLabel = new JLabel("Race Length: ");
+        raceLengthLabel.setForeground(Color.WHITE);
+        customiseRace.add(raceLengthLabel);
+        customiseRace.add(raceLengthField);
+
+
+        //BUTTONS
 
         JPanel buttonPanel = new JPanel();
 
@@ -226,8 +286,14 @@ public class GetRaceInfoUI {
 
                 if (choice == JOptionPane.YES_OPTION) {
                     mainFrame.dispose();
-                    printFinalHorses();  // Still print to console if needed
-                    Main.startRace(finalHorses);
+                    printFinalHorses();
+                    RaceData raceData = new RaceData();
+                    raceData.horses = finalHorses;
+                    raceData.fontColour = fontColourDropdown.getSelectedItem().toString();
+                    raceData.backgroundColour = fontColourDropdown.getSelectedItem().toString();
+                    raceData.RaceLength = raceLengthField.getValue();
+
+                    Main.startRace(raceData);
                 }
             }
         });
@@ -237,10 +303,37 @@ public class GetRaceInfoUI {
         buttonPanel.add(clearAllButton);
         buttonPanel.add(doneButton);
 
+
+
+        //MENU BAR
+        JMenuBar menuBar = new JMenuBar();
+
+        JMenu BackMenu = new JMenu("Back");
+        JMenuItem RTMMButton = new JMenuItem("Return to Menu");
+        RTMMButton.addActionListener(e -> {
+            mainFrame.dispose();
+            Main.RTMM();
+        });
+
+        BackMenu.add(RTMMButton);
+
+        menuBar.add(BackMenu);
+
+        mainFrame.setJMenuBar(menuBar);
+
+
         // Create a main content panel
+
+
+        JPanel centerPanel = new JPanel();
+        centerPanel.setLayout(new BoxLayout(centerPanel , BoxLayout.Y_AXIS));
+        centerPanel.setOpaque(false);
+        centerPanel.add(createHorse);
+        centerPanel.add(customiseRace);
+
         JPanel contentPanel = new JPanel(new BorderLayout());
         contentPanel.setOpaque(false);
-        contentPanel.add(createHorse, BorderLayout.CENTER);
+        contentPanel.add(centerPanel, BorderLayout.CENTER);
         contentPanel.add(scrollPane, BorderLayout.SOUTH);
 
 
@@ -275,7 +368,12 @@ public class GetRaceInfoUI {
     private static void initializeModels() {
         iconModel = new DefaultComboBoxModel<>();
         laneModel = new DefaultComboBoxModel<>();
+        colourModel = new DefaultComboBoxModel<>();
+        fontColourModel = new DefaultComboBoxModel<>();
         for (Character c : horseIcons) iconModel.addElement(c);
         for (Integer lane : lanes) laneModel.addElement(lane);
+        for(String x: colours)  colourModel.addElement(x);
+        for(String x: colours)   fontColourModel.addElement(x);
+
     }
 }
