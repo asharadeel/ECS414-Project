@@ -3,7 +3,7 @@ public class GameStatistics {
     private HorseData[] RaceHorseData = new HorseData[0];
     private Horse winner;
     private int time = 0;
-    private boolean raceStatus;
+    private boolean raceFinished;
 
     //declaration
     GameStatistics(int distance, Horse[] horses) {
@@ -17,24 +17,36 @@ public class GameStatistics {
                 RaceHorseData = AALibrary.appendValue(RaceHorseData, null);
             }
         }
+        raceFinished = false;
 
+        System.out.println("- GAME STATS STARTED FOR RACE  -----------------------");
         System.out.println("Race Length: " + raceLength);
         for(HorseData x : RaceHorseData){
             if(x != null) {
-                System.out.println(x.getName());
+                System.out.println(x.getSymbol() + " | Name: " + x.getName() + " | Conf: " + x.getConfidence());
             }
         }
+        System.out.println("------------------------------------------------------");
     }
 
+    public void finished(){
+        if(raceFinished){
+            AALibrary.printHorses(RaceHorseData);
+        }
+    }
     //accessors and mutators
     public void setWinner(Horse h) {
         winner = h;
     }
 
+    public void setFinished(){
+        raceFinished = true;
+    }
+
     /*
     Active detection during game to track statistcs.
      */
-    public void activeDetect(){
+    public void detect(){
         detectFall();
         trackTime();
 
@@ -44,15 +56,20 @@ public class GameStatistics {
 
 
     private void detectFall(){
-        for(int i = 0; i < raceLength; i++){
-            if(RaceHorseData[i] != null) {
-                if(RaceHorseData[i].hasFallen() && !RaceHorseData[i].isHorseChecked()){
-                    HorseData current = RaceHorseData[i];
-                    double avg = calculateAvgSpeed(current,time);
-                    current.setTimeTaken(time);
-                    current.setAverageSpeed(avg);
-                    current.setHorseChecked(true);
+        for(int i = 0; i < 10; i++){
+            try {
+                if (RaceHorseData[i] != null) {
+                    if (RaceHorseData[i].hasFallen() && !RaceHorseData[i].isHorseChecked()) {
+                        HorseData current = RaceHorseData[i];
+                        double avg = calculateAvgSpeed(current, time);
+                        current.setTimeTaken(time);
+                        current.setAverageSpeed(avg);
+                        current.setHorseChecked(true);
+                    }
                 }
+            }
+            catch(Exception e){
+                System.out.println(e);
             }
         }
     }
@@ -82,6 +99,7 @@ public class GameStatistics {
         }
         return speedpercentage/100.0;
     }
+
 
 
 

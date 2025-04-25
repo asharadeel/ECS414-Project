@@ -19,8 +19,17 @@ public class Race
     private Horse[] raceHorses = new Horse[0];
     JFrame RaceMenu;
     JPanel RacePanel;
-    GameStatistics stats = new GameStatistics(raceLength, raceHorses);
+    private GameStatistics stats;
+    private Timer RaceTimer;
 
+    private String fontColour;
+    private String backgroundColour;
+
+
+    public void setColours(String f, String b){
+        fontColour = f;
+        backgroundColour = b;
+    }
 
     /**
      * Constructor for objects of class Race
@@ -47,7 +56,11 @@ public class Race
 
     public void startRace() {
         RaceMenu = new JFrame("Race!");
-        RaceMenu.setSize(1000, 250);
+
+        int frameWidth = raceLength*10;
+        RaceMenu.setSize(frameWidth, 250);
+
+        RaceMenu.setBackground(AALibrary.getColorFromString(backgroundColour));
 
         RacePanel = new JPanel();
         RacePanel.setLayout(new BoxLayout(RacePanel, BoxLayout.Y_AXIS));
@@ -55,7 +68,22 @@ public class Race
         RaceMenu.add(scrollPane);
         RaceMenu.setVisible(true);
         RaceMenu.setLocationRelativeTo(null);
+        RacePanel.setOpaque(true);
+        RacePanel.setBackground(Color.WHITE);
 
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu CancelRace = new JMenu("Cancel");
+        JMenuItem cancelButton = new JMenuItem("Cancel");
+        cancelButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                closeUI();
+            }
+        });
+
+        CancelRace.add(cancelButton);
+        menuBar.add(CancelRace);
+        RaceMenu.setJMenuBar(menuBar);
 
         // Reset all horses
         for(Horse x : raceHorses) {
@@ -64,8 +92,11 @@ public class Race
             }
         }
 
+
+        stats = new GameStatistics(raceLength, raceHorses);
+
         // Create a Swing Timer for animation
-        new Timer(100, new ActionListener() {
+        RaceTimer = new Timer(100, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 boolean finished = false;
                 Horse winner = null;
@@ -74,6 +105,7 @@ public class Race
                 for(Horse x : raceHorses) {
                     if(x != null && !x.hasFallen()) {
                         moveHorse(x);
+                        stats.detect();
                     }
                 }
 
@@ -97,6 +129,8 @@ public class Race
 
                 // Check if race finished
                 if (finished || allFell) {
+                    stats.setFinished();
+                    stats.finished();
                     ((Timer)e.getSource()).stop();
                     if(winner != null) {
                         JOptionPane.showMessageDialog(RaceMenu,
@@ -109,8 +143,12 @@ public class Race
                     FinishedRace(raceHorses);
                 }
             }
-        }).start();
+        });
+
+        RaceTimer.start();
     }
+
+
 
     /**
      * Determines if a horse has won the race
@@ -180,7 +218,7 @@ public class Race
                 laneLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
                 RacePanel.add(laneLabel);
             } else {
-                RacePanel.add(new JLabel(" ")); // Empty space for null horses
+                RacePanel.add(new JLabel(" "));
             }
         }
 
@@ -291,10 +329,28 @@ public class Race
 
     private void FinishedRace(Horse[] RaceHorses){
         //Reset horses
+        stats.finished();
         for (Horse x : RaceHorses) {
             if(x != null) {
                 x.resetHorse();
             }
         }
+    }
+
+    public void closeUI(){
+        if (RaceTimer != null && RaceTimer.isRunning()) {
+            RaceTimer.stop();
+        }
+        if (RacePanel != null) {
+            RacePanel.removeAll();
+            RacePanel.revalidate();
+            RacePanel.repaint();
+        }
+        if (RaceMenu != null) {
+            RaceMenu.dispose();
+            RaceMenu = null;
+        }
+
+        Main.RTMM();
     }
 }

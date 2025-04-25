@@ -13,18 +13,16 @@ public class Main {
 
 
     public static void main(String[] args) {
-
-
         MainMenu.showUI();
 
     }
 
     // Called when GetRaceInfoUI confirms horses
-    public static void startRace(Horse[] horses) {
-        raceHorses = horses;
+    public static void startRace(RaceData dataR) {
+        raceHorses = dataR.horses;
         System.out.println("Race started with horses:");
-        Race race = new Race(100);
-
+        Race race = new Race(dataR.RaceLength);
+        race.setColours(dataR.fontColour, dataR.backgroundColour);
         int pos = 0;
         for (Horse horse : raceHorses) {
             if (horse != null) {
@@ -35,6 +33,10 @@ public class Main {
         }
 
         race.startRace();
+    }
+
+    public static void RTMM(){
+        MainMenu.showUI();
     }
 
 
