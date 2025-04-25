@@ -17,19 +17,14 @@ public class Race
 {
     private int raceLength;
     private Horse[] raceHorses = new Horse[0];
+
     JFrame RaceMenu;
     JPanel RacePanel;
     private GameStatistics stats;
     private Timer RaceTimer;
-
     private String fontColour;
     private String backgroundColour;
 
-
-    public void setColours(String f, String b){
-        fontColour = f;
-        backgroundColour = b;
-    }
 
     /**
      * Constructor for objects of class Race
@@ -43,6 +38,10 @@ public class Race
         raceLength = distance;
     }
 
+    public void setColours(String f, String b){
+        fontColour = f;
+        backgroundColour = b;
+    }
 
     /**
      * Adds a horse to the race in a given lane
@@ -85,15 +84,19 @@ public class Race
         menuBar.add(CancelRace);
         RaceMenu.setJMenuBar(menuBar);
 
+
+
+        // - -- - -- - GAME STARTS HERE
+
+        stats = new GameStatistics(raceLength, raceHorses);
+        CurrentRaceHorses = createHorseData(raceHorses);
+
         // Reset all horses
-        for(Horse x : raceHorses) {
+        for(HorseData x : CurrentRaceHorses) {
             if(x != null) {
                 x.goBackToStart();
             }
         }
-
-
-        stats = new GameStatistics(raceLength, raceHorses);
 
         // Create a Swing Timer for animation
         RaceTimer = new Timer(100, new ActionListener() {
@@ -102,7 +105,7 @@ public class Race
                 Horse winner = null;
 
                 // Move each horse
-                for(Horse x : raceHorses) {
+                for(Horse x : CurrentRaceHorses) {
                     if(x != null && !x.hasFallen()) {
                         moveHorse(x);
                         stats.detect();
@@ -111,7 +114,7 @@ public class Race
 
                 // Check race completion
                 boolean allFell = true;
-                for (Horse x : raceHorses) {
+                for (Horse x : CurrentRaceHorses) {
                     if(x == null) continue;
                     if (raceWonBy(x)) {
                         finished = true;
@@ -131,14 +134,11 @@ public class Race
                 if (finished || allFell) {
                     stats.setFinished();
                     stats.finished();
+
+                    AALibrary.printHorses(CurrentRaceHorses);
                     ((Timer)e.getSource()).stop();
-                    if(winner != null) {
-                        JOptionPane.showMessageDialog(RaceMenu,
-                                "The winner is " + winner.getName() + "!");
-                    } else {
-                        JOptionPane.showMessageDialog(RaceMenu,
-                                "All horses fell!");
-                    }
+
+                    RaceFinishedUI(stats);
                     UpdateConfidence(raceHorses, winner);
                     FinishedRace(raceHorses);
                 }
@@ -149,6 +149,21 @@ public class Race
     }
 
 
+
+    public HorseData[] createHorseData(Horse[] horses) {
+        HorseData[] Array = new HorseData[horses.length];
+        for(int i =0; i < horses.length; i++) {
+            Horse horse = horses[i];
+            if(horse != null) {
+                HorseData x = new HorseData(horse);
+                x.setLane(i);
+            }
+            else{
+                Array[i] = null;
+            }
+        }
+        return Array;
+    }
 
     /**
      * Determines if a horse has won the race
@@ -212,9 +227,9 @@ public class Race
         RacePanel.add(new JLabel(new String(new char[raceLength+3]).replace('\0', '=')));
 
         // Print each horse's lane
-        for(int i = 0; i < raceHorses.length; i++) {
-            if(raceHorses[i] != null) {
-                JLabel laneLabel = new JLabel(getLaneString(raceHorses[i]));
+        for(int i = 0; i < CurrentRaceHorses.length; i++) {
+            if(CurrentRaceHorses[i] != null) {
+                JLabel laneLabel = new JLabel(getLaneString(CurrentRaceHorses[i]));
                 laneLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
                 RacePanel.add(laneLabel);
             } else {
@@ -352,5 +367,15 @@ public class Race
         }
 
         Main.RTMM();
+    }
+
+    public static void RaceFinishedUI(GameStatistics stats){
+        JFrame RaceStatus = new JFrame("Race Status");
+
+
+
+    }
+    public static void RaceAgain(){
+
     }
 }
