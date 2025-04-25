@@ -29,6 +29,10 @@ public class GameStatistics {
         System.out.println("------------------------------------------------------");
     }
 
+    public HorseData[] getHorses(){
+        return RaceHorseData;
+    }
+
     public void finished(){
         if(raceFinished){
             AALibrary.printHorses(RaceHorseData);
@@ -107,6 +111,8 @@ public class GameStatistics {
         double x = (double) h.getDistanceTravelled();
         return (Math.round((x/t*10.0)*10.0)/2.0);
     }
+
+
 
 
 

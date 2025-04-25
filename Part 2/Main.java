@@ -9,12 +9,11 @@ import java.util.*;
  * @version 1.6
  */
 public class Main {
-    static Horse[] raceHorses; // Stores horses from GetRaceInfoUI
+    static Horse[] raceHorses;
 
 
     public static void main(String[] args) {
         MainMenu.showUI();
-
     }
 
     // Called when GetRaceInfoUI confirms horses
@@ -34,7 +33,6 @@ public class Main {
 
         race.startRace();
     }
-
     public static void RTMM(){
         MainMenu.showUI();
     }

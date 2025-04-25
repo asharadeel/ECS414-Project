@@ -1,4 +1,5 @@
 public class HorseData extends Horse{
+    private int lane;
     private double averageSpeed;
     private double timeTaken;
     private boolean winner;
@@ -15,6 +16,9 @@ public class HorseData extends Horse{
 
     //ACCESSORS
 
+    public int getLane(){
+        return lane;
+    }
     /**
      * Checks if the horse has been verified/inspected
      * @return true if the horse has been checked, false otherwise
@@ -78,5 +82,9 @@ public class HorseData extends Horse{
      */
     public void setWinner(boolean winner) {
         this.winner = winner;
+    }
+
+    public void setLane(int lane) {
+        this.lane = lane;
     }
 }
