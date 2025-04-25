@@ -18,6 +18,7 @@ public class Race
 {
     private int raceLength;
     private Horse[] raceHorses = new Horse[0];
+    private String weatherCondition;
 
     JFrame RaceMenu;
     JPanel RacePanel;
@@ -58,7 +59,7 @@ public class Race
         RaceMenu = new JFrame("Race!");
 
         int frameWidth = raceLength*10;
-        RaceMenu.setSize(frameWidth, 250);
+        RaceMenu.setSize(frameWidth, 300);
 
         RaceMenu.setBackground(AALibrary.getColorFromString(backgroundColour));
 
@@ -88,7 +89,7 @@ public class Race
 
 
         // - -- - -- - GAME STARTS HERE
-
+        weatherCondition = FindWeatherFactor();
         stats = new GameStatistics(raceLength, raceHorses);
 
         // Reset all horses
@@ -156,20 +157,7 @@ public class Race
 
 
 
-    public HorseData[] createHorseData(Horse[] horses) {
-        HorseData[] Array = new HorseData[horses.length];
-        for(int i =0; i < horses.length; i++) {
-            Horse horse = horses[i];
-            if(horse != null) {
-                HorseData x = new HorseData(horse);
-                x.setLane(i);
-            }
-            else{
-                Array[i] = null;
-            }
-        }
-        return Array;
-    }
+
 
     /**
      * Determines if a horse has won the race
@@ -204,16 +192,37 @@ public class Race
         if  (!theHorse.hasFallen())
         {
             //the probability that the horse will move forward depends on the confidence;
-            if (Math.random() < (theHorse.getConfidence()))
-            {
+            double successThreshold = theHorse.getConfidence(); // Base threshold
+
+            if (weatherCondition.equals("Mud")) {
+                successThreshold *= 0.95;  // 5% harder
+            }
+            else if (weatherCondition.equals("Rain")) {
+                successThreshold *= 0.9;   // 10% harder
+            }
+            else if (weatherCondition.equals("Snow")) {
+                successThreshold *= 0.8;   // 20% harder
+            }
+
+            if (Math.random() < successThreshold) {
                 theHorse.moveForward();
             }
 
             //the probability that the horse will fall is very small (max is 0.1)
             //but will also will depends exponentially on confidence
             //so if you double the confidence, the probability that it will fall is *2
+            double factor = 0.02;
+            if(weatherCondition.equals("Mud")){
+                factor = 0.04;
+            }
+            else if(weatherCondition.equals("Rain")){
+                factor = 0.07;
+            }
+            else if(weatherCondition.equals("Snow")){
+                factor = 0.1;
+            }
 
-            if (Math.random() < (0.1*theHorse.getConfidence()*theHorse.getConfidence()))
+            if (Math.random() < (factor*theHorse.getConfidence()*theHorse.getConfidence()))
             {
                 theHorse.fall();
                 System.out.println(theHorse.getName() + " has fallen!");
@@ -245,6 +254,19 @@ public class Race
 
         // Add bottom border
         RacePanel.add(new JLabel(new String(new char[raceLength+3]).replace('\0', '=')));
+
+        RacePanel.add(new JLabel(""));
+
+        if(weatherCondition.equals("Mud")) {
+            RacePanel.add(new JLabel(new String("The weather is kind of muddy today...")));
+        }
+        else if(weatherCondition.equals("Rain")) {
+            RacePanel.add(new JLabel(new String("It is raining today")));
+        }
+        else if(weatherCondition.equals("Snow")) {
+            RacePanel.add(new JLabel(new String("There is snow on the track!")));
+
+        }
 
         RacePanel.revalidate();
         RacePanel.repaint();
@@ -322,6 +344,22 @@ public class Race
         }
     }
 
+    public static String FindWeatherFactor(){
+        double val =Math.round(Math.random()*100)/100.0;
+        if(val >= 0.0 && val < 0.25){
+            return "None";
+        }
+        else if( val >= 0.25 && val < 0.65){
+            return "Mud";
+        }
+        else if(val >= 0.65 && val <= 0.95){
+            return "Rain";
+        }
+        else{
+            return "Snow";
+        }
+    }
+
     /**
      * Update the confidence of winning and loosing horses.
      * @param RaceHorses tbe horses of the race
@@ -342,6 +380,8 @@ public class Race
             }
         }
     }
+
+
 
     /**
      * Method to execute at the end of any race
