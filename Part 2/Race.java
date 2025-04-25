@@ -1,3 +1,4 @@
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,7 +18,6 @@ public class Race
 {
     private int raceLength;
     private Horse[] raceHorses = new Horse[0];
-    private HorseData[] CurrentRaceHorses;
 
     JFrame RaceMenu;
     JPanel RacePanel;
@@ -90,10 +90,9 @@ public class Race
         // - -- - -- - GAME STARTS HERE
 
         stats = new GameStatistics(raceLength, raceHorses);
-        CurrentRaceHorses = createHorseData(raceHorses);
 
         // Reset all horses
-        for(HorseData x : CurrentRaceHorses) {
+        for(Horse x : raceHorses) {
             if(x != null) {
                 x.goBackToStart();
             }
@@ -106,7 +105,7 @@ public class Race
                 Horse winner = null;
 
                 // Move each horse
-                for(Horse x : CurrentRaceHorses) {
+                for(Horse x : raceHorses) {
                     if(x != null && !x.hasFallen()) {
                         moveHorse(x);
                         stats.detect();
@@ -115,12 +114,11 @@ public class Race
 
                 // Check race completion
                 boolean allFell = true;
-                for (Horse x : CurrentRaceHorses) {
+                for (Horse x : raceHorses) {
                     if(x == null) continue;
                     if (raceWonBy(x)) {
                         finished = true;
                         winner = x;
-                        stats.setWinner(x);
                         break;
                     }
                     if (!x.hasFallen()) allFell = false;
@@ -136,8 +134,15 @@ public class Race
                     stats.setFinished();
                     stats.finished();
 
-                    AALibrary.printHorses(CurrentRaceHorses);
+                    AALibrary.printHorses(raceHorses);
                     ((Timer)e.getSource()).stop();
+                    if (winner != null) {
+                        System.out.println("Winner = " + winner.getName());
+                        JOptionPane.showMessageDialog(Race.this.RaceMenu, "The winner is " + winner.getName() + "!");
+                    } else {
+                        JOptionPane.showMessageDialog(Race.this.RaceMenu, "All horses fell!");
+                    }
+
 
                     RaceFinishedUI(stats);
                     UpdateConfidence(raceHorses, winner);
@@ -180,7 +185,7 @@ public class Race
         }
         else
         {
-             return false;
+            return false;
         }
     }
 
@@ -228,9 +233,9 @@ public class Race
         RacePanel.add(new JLabel(new String(new char[raceLength+3]).replace('\0', '=')));
 
         // Print each horse's lane
-        for(int i = 0; i < CurrentRaceHorses.length; i++) {
-            if(CurrentRaceHorses[i] != null) {
-                JLabel laneLabel = new JLabel(getLaneString(CurrentRaceHorses[i]));
+        for(int i = 0; i < raceHorses.length; i++) {
+            if(raceHorses[i] != null) {
+                JLabel laneLabel = new JLabel(getLaneString(raceHorses[i]));
                 laneLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
                 RacePanel.add(laneLabel);
             } else {

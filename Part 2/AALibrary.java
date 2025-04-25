@@ -81,11 +81,17 @@ public class AALibrary {
         }
 
         for(Horse x : h){
-            System.out.print("\n " +
-                    count + "= " +
-                    " Name: " + x.getName() +
-                    " Symbol: " + x.getSymbol() +
-                    " Confidence: " + x.getConfidence());
+            if(x != null) {
+                System.out.print("\n" +
+                        count + "= " +
+                        " Name: " + x.getName() +
+                        " Symbol: " + x.getSymbol() +
+                        " Confidence: " + x.getConfidence());
+            }
+            else{
+                System.out.print("\n" + count + " = null index");
+            }
+            count++;
         }
     }
 
