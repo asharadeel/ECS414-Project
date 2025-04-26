@@ -1,11 +1,12 @@
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
+import java.io.IOException;
 
 public class MainMenu {
 
     public static void showUI() {
-        JFrame MainMenu = new JFrame("HorseRacer");
+        JFrame MainMenu = new JFrame("HorseRacer23");
         MainMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         MainMenu.setSize(900, 400);
         MainMenu.setLocationRelativeTo(null);
@@ -83,6 +84,27 @@ public class MainMenu {
         CloseMM.setPreferredSize(new Dimension(150, 40));
         CloseMM.setBackground(Color.WHITE);
         CloseMM.setForeground(Color.BLACK);
+
+        //JMENU
+        JMenuBar MenuBar = new JMenuBar();
+        JMenu History = new JMenu("History");
+        JMenuItem ViewHistory = new JMenuItem("View History");
+        ViewHistory.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                try {
+                    SaveSystem.Fetch();
+                } catch (IOException ex) {
+                    throw new RuntimeException(ex);
+                }
+            }
+        });
+
+        History.add(ViewHistory);
+        MenuBar.add(History);
+
+        MainMenu.setJMenuBar(MenuBar);
+
 
         // Add action listeners
         StartRacer.addActionListener(e -> {

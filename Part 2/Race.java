@@ -2,6 +2,7 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
@@ -92,6 +93,7 @@ public class Race
         // - -- - -- - GAME STARTS HERE
         weatherCondition = FindWeatherFactor();
         stats = new GameStatistics(raceLength);
+        stats.setWeatherCondition(weatherCondition);
 
         // Reset all horses
         for(Horse x : raceHorses) {
@@ -140,7 +142,11 @@ public class Race
 
                 // Check if race finished
                 if (finished || allFell) {
-                    stats.finished();
+                    try {
+                        stats.finished();
+                    } catch (IOException ex) {
+                        throw new RuntimeException(ex);
+                    }
 
                     AALibrary.printHorses(raceHorses);
                     ((Timer)e.getSource()).stop();
@@ -419,11 +425,26 @@ public class Race
         titlePanel.setLayout(new BorderLayout());
         titlePanel.setPreferredSize(new Dimension(0, 100)); // Height of title panel
 
-        JLabel titleLabel = new JLabel("Race Statistics", SwingConstants.CENTER);
+        JLabel titleLabel = new JLabel("Race Statistics", SwingConstants.CENTER); // Center aligned
         titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
         titleLabel.setForeground(Color.BLACK);
         titleLabel.setOpaque(false);
         titlePanel.add(titleLabel, BorderLayout.CENTER);
+
+        if(stats.getWinner() != null){
+            JLabel winnerLabel = new JLabel("Winner: " + stats.getWinner().getName(), SwingConstants.CENTER); // Center aligned
+            winnerLabel.setFont(new Font("Arial", Font.BOLD, 20));
+            winnerLabel.setForeground(Color.BLACK);
+            winnerLabel.setOpaque(false);
+            titlePanel.add(winnerLabel, BorderLayout.SOUTH); // Add to panel, not to another label
+        }
+        else{
+            JLabel winnerLabel = new JLabel("There was no winner this game", SwingConstants.CENTER); // Center aligned
+            winnerLabel.setFont(new Font("Arial", Font.BOLD, 12));
+            winnerLabel.setForeground(Color.BLACK);
+            winnerLabel.setOpaque(false);
+            titlePanel.add(winnerLabel, BorderLayout.SOUTH); // Add to panel, not to another label
+        }
 
         // ==================== TABLE PANEL ====================
         // Column headers

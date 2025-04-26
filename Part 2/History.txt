@@ -1,0 +1,61 @@
+###############################################################
+GAME - 01:25:28 - 26:04:2025
+---------------------------------
+No winner - all horses fell!
+
+HORSE STATISTICS:
+---------------------------------
+♖ | sdgtshg         | Lane: 3 | Distance: 22m | Speed: 10.50km/h | Time: 104.00s
+♕ | dgjgdj          | Lane: 2 | Distance: 22m | Speed: 8.00km/h | Time: 139.00s
+♔ | agsahg          | Lane: 1 | Distance: 57m | Speed: 9.00km/h | Time: 315.00s
+---------------------------------
+END OF RACE
+###############################################################
+
+
+
+###############################################################
+GAME - 01:25:57 - 26:04:2025
+---------------------------------
+No winner - all horses fell!
+
+HORSE STATISTICS:
+---------------------------------
+♕ | dgjgdj          | Lane: 2 | Distance: 30m | Speed: 8.00km/h | Time: 187.00s
+♔ | agsahg          | Lane: 1 | Distance: 45m | Speed: 7.00km/h | Time: 321.00s
+♖ | sdgtshg         | Lane: 3 | Distance: 74m | Speed: 6.00km/h | Time: 608.00s
+---------------------------------
+END OF RACE
+###############################################################
+
+
+
+###############################################################
+GAME - 01:28:41 - 26:04:2025
+---------------------------------
+Winner: ♖ | sdgtshg
+
+HORSE STATISTICS:
+---------------------------------
+♕ | dgjgdj          | Lane: 2 | Distance: 44m | Speed: 8.00km/h | Time: 268.00s
+♔ | agsahg          | Lane: 1 | Distance: 56m | Speed: 6.50km/h | Time: 444.00s
+♖ | sdgtshg         | Lane: 3 | Distance: 100m | Speed: 6.50km/h | Time: 797.00s
+---------------------------------
+END OF RACE
+###############################################################
+
+
+
+###############################################################
+GAME - 01:41:31 - 26:04:2025
+---------------------------------
+No winner - all horses fell!
+
+HORSE STATISTICS:
+---------------------------------
+♖ | HISTORYASRYYAR  | Lane: 3 | Distance: 4m | Speed: 14.50km/h | Time: 14.00s
+♔ | sdgag           | Lane: 1 | Distance: 23m | Speed: 8.50km/h | Time: 138.00s
+♕ | adgadg          | Lane: 2 | Distance: 89m | Speed: 6.50km/h | Time: 709.00s
+---------------------------------
+END OF RACE
+###############################################################

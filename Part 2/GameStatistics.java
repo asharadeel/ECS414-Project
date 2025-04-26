@@ -1,9 +1,13 @@
+import java.io.IOException;
+
 public class GameStatistics {
     private int raceLength;
     private HorseData[] RaceHorseData = new HorseData[0];
     private Horse winner;
     private int time = 0;
     private boolean raceFinished;
+    private String weatherCondition;
+
 
     //declaration
     GameStatistics(int distance) {
@@ -15,16 +19,27 @@ public class GameStatistics {
         return RaceHorseData;
     }
 
-    public void finished(){
+    public void finished() throws IOException {
         setFinished();
         if(raceFinished){
             AALibrary.printHorses(RaceHorseData);
         }
+        SaveSystem.Save(this);
     }
     //accessors and mutators
     public void setWinner(Horse h) {
         winner = h;
         HorseData w = new HorseData(h);
+    }
+    public String getWeatherCondition() {
+        return weatherCondition;
+    }
+    public void setWeatherCondition(String weatherCondition) {
+        this.weatherCondition = weatherCondition;
+    }
+
+    public Horse getWinner() {
+        return winner;
     }
 
     public void setFinished(){
