@@ -88,6 +88,7 @@ public class Main {
                 r1.addHorse(RaceHorses[i],i+1);
             }
 
+
             //Start thr Race
             r1.startRace();
 

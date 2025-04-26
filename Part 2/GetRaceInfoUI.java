@@ -293,7 +293,8 @@ public class GetRaceInfoUI {
                     raceData.backgroundColour = colourDropdown.getSelectedItem().toString();
                     raceData.RaceLength = raceLengthField.getValue();
 
-                    Main.startRace(raceData);
+                    Main.StartBets(raceData);
+
                 }
             }
         });
@@ -315,9 +316,17 @@ public class GetRaceInfoUI {
             Main.RTMM();
         });
 
+        JMenu GamblR = new JMenu("GamblR");
+        JMenuItem PlaceBets = new JMenuItem("Place Bets");
+        PlaceBets.addActionListener(e -> {
+
+        });
+
+        GamblR.add(PlaceBets);
         BackMenu.add(RTMMButton);
 
         menuBar.add(BackMenu);
+        menuBar.add(GamblR);
 
         mainFrame.setJMenuBar(menuBar);
 

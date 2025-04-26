@@ -492,7 +492,16 @@ public class Race
 
         });
 
+        JButton newGameWithBets = new JButton("Race Game with New Bets");
+        newGameWithBets.setFont(new Font("Arial", Font.BOLD, 16));
+        newGameWithBets.addActionListener(e -> {
+            statsFrame.dispose();
+            Main.StartBets();
+        });
+
+
         buttonPanel.add(raceAgainBtn);
+        buttonPanel.add(newGameWithBets);
         buttonPanel.add(mainMenuBtn);
 
         // ==================== ASSEMBLE FRAME ====================
