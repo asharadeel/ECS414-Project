@@ -2,10 +2,13 @@ import java.awt.*;
 import java.util.Arrays;
 import java.util.Scanner;
 
+/**
+ * Ashars main library for general methods
+ * @author ashar
+ * @version 1.0
+ */
+
 public class AALibrary {
-
-
-
     /**
      * Add a value to a classic array
      * @param arr - The array to manipulate
@@ -56,6 +59,11 @@ public class AALibrary {
         }
     }
 
+    /**
+     * Return the COLOUR value based on string input
+     * @param colorName - as a string
+     * @return - as a colour
+     */
     public static Color getColorFromString(String colorName) {
         if (colorName == null) return Color.WHITE; // Default fallback
 
@@ -72,6 +80,10 @@ public class AALibrary {
         }
     }
 
+    /**
+     * For debugging - print all values in array for race horses
+     * @param h - Horse object array passed
+     */
     public static void printHorses(Horse[] h){
         int count = 1;
         System.out.println("HORSES ARRAY ---------");
@@ -97,6 +109,10 @@ public class AALibrary {
 
     }
 
+    /**
+     * For debugging - print all values in array for race horses
+     * @param h - Horse Data object array passed - more elaborate than previous
+     */
     public static void printHorses(HorseData[] h){
         System.out.println("DETAILED HORSES ARRAY -----------------------");
         int count = 1;

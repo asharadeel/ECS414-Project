@@ -4,9 +4,23 @@ import java.io.*;
 import java.text.*;
 import java.util.*;
 
+/**
+ * Save system for history of races
+ * @author ashar
+ * @version 1.0
+ */
+
 public class SaveSystem {
+    //file name declaration
     private static String fileName = "History.txt";
 
+    /**
+     * The Save method, for saving data to file
+     * - create new file if file does not exist
+     * - if file exists, then append new values
+     * @param stats - fetch the stats of the completed race
+     * @throws IOException - handle any IO exceptions
+     */
     public static void Save(GameStatistics stats) throws IOException {
         SimpleDateFormat dateFormat = new SimpleDateFormat("HH:mm:ss - dd:MM:yyyy");
         String timestamp = dateFormat.format(new Date());
@@ -55,6 +69,12 @@ public class SaveSystem {
         }
     }
 
+    /**
+     * Fetch the user data for the History menu.
+     * retrieve data from history.txt and show in UI that can be accessed from
+     * main menu
+     * @throws IOException - handle exceptions
+     */
     public static void Fetch() throws IOException {
         // Create main frame
         JFrame historyFrame = new JFrame("Game History");
@@ -96,7 +116,7 @@ public class SaveSystem {
             }
         };
         titlePanel.setLayout(new BorderLayout());
-        titlePanel.setPreferredSize(new Dimension(0, 100)); // Set title panel height
+        titlePanel.setPreferredSize(new Dimension(0, 100));
 
         // Add title label
         JLabel titleLabel = new JLabel("Race History", SwingConstants.CENTER);

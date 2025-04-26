@@ -1,3 +1,6 @@
+/**
+ * User class for saving data and history of users bets
+ */
 public class User {
     String username;
     String password;

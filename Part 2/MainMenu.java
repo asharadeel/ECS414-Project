@@ -3,8 +3,17 @@ import java.awt.*;
 import java.awt.event.*;
 import java.io.IOException;
 
-public class MainMenu {
 
+/**
+ * The Main Menu UI , executed at the start of application
+ * @author ashar
+ * @version 1.1
+ */
+
+public class MainMenu {
+    /**
+     * Show the main menu interface
+     */
     public static void showUI() {
         JFrame MainMenu = new JFrame("HorseRacer23");
         MainMenu.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -42,17 +51,14 @@ public class MainMenu {
         centerPanel.setOpaque(false);
 
         // Main Title
-        // Replace the text label with an image logo
         ImageIcon logoIcon = new ImageIcon("Images/logo.png");
         JLabel titleLogo = new JLabel(logoIcon);
         titleLogo.setAlignmentX(Component.CENTER_ALIGNMENT);
 
-// If you need to resize the image to fit better:
         Image originalImage = logoIcon.getImage();
         Image scaledImage = originalImage.getScaledInstance(400, -1, Image.SCALE_SMOOTH); // 300px width, maintain aspect ratio
         titleLogo.setIcon(new ImageIcon(scaledImage));
 
-        // Caption
         JLabel caption = new JLabel("Welcome to horse racer! Press \"Start\" to begin.");
         caption.setFont(new Font("Arial", Font.PLAIN, 12));
         caption.setAlignmentX(Component.CENTER_ALIGNMENT);
@@ -60,7 +66,7 @@ public class MainMenu {
 
         centerPanel.add(Box.createVerticalGlue());
         centerPanel.add(Box.createVerticalGlue());
-        centerPanel.add(titleLogo);  // This replaces the old Title JLabel
+        centerPanel.add(titleLogo);
         centerPanel.add(Box.createRigidArea(new Dimension(0, 5)));
         centerPanel.add(caption);
         centerPanel.add(Box.createVerticalGlue());

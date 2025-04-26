@@ -9,25 +9,29 @@ import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 
 /**
- * A multi-horse (2-10) race
+ * A multi-horse (2-10) race using interface
  *
  * @author McRaceface, ashar
- * @version 2.5
+ * @version 3.1
  */
 
 
 public class Race
 {
+    //DECLARATIONS
     private int raceLength;
     private Horse[] raceHorses = new Horse[0];
     private String weatherCondition;
 
+    //INTERFACE
     JFrame RaceMenu;
     JPanel RacePanel;
-    private GameStatistics stats;
-    private Timer RaceTimer;
     private String fontColour;
     private String backgroundColour;
+
+    //OTHER RELATED OBJECTS
+    private GameStatistics stats;
+    private Timer RaceTimer;
 
 
     /**
@@ -42,6 +46,11 @@ public class Race
         raceLength = distance;
     }
 
+    /**
+     * Set the colours for styling text foreground and background
+     * @param fc
+     * @param bc
+     */
     public void setColours(String fc, String bc){
         fontColour = fc;
         backgroundColour = bc;
@@ -57,13 +66,16 @@ public class Race
         raceHorses = AALibrary.appendValue(raceHorses,theHorse);
     }
 
+    /**
+     * The main race controller
+     */
     public void startRace() {
+        //CREATE INTERFACE --------------
         RaceMenu = new JFrame("Race!");
 
-        int frameWidth = raceLength*9;
+        int frameWidth = raceLength*10;
         RaceMenu.setSize(frameWidth, 300);
 
-        System.out.println(backgroundColour);
         RacePanel = new JPanel();
         RacePanel.setLayout(new BoxLayout(RacePanel, BoxLayout.Y_AXIS));
         JScrollPane scrollPane = new JScrollPane(RacePanel);
@@ -73,8 +85,7 @@ public class Race
         RacePanel.setOpaque(true);
         RacePanel.setBackground(AALibrary.getColorFromString(backgroundColour));
 
-
-
+        //MENU BAR ---------------
         JMenuBar menuBar = new JMenuBar();
         JMenu CancelRace = new JMenu("Cancel");
         JMenuItem cancelButton = new JMenuItem("Cancel");
@@ -89,8 +100,7 @@ public class Race
         RaceMenu.setJMenuBar(menuBar);
 
 
-
-        // - -- - -- - GAME STARTS HERE
+        // -------- RACE STARTS HERE
         weatherCondition = FindWeatherFactor();
         stats = new GameStatistics(raceLength);
         stats.setWeatherCondition(weatherCondition);
@@ -109,7 +119,6 @@ public class Race
                 int index = 0;
                 Horse winner = null;
                 boolean allFell = true;
-
 
                 // Move each horse
                 for(Horse x : raceHorses) {
@@ -148,17 +157,16 @@ public class Race
                         throw new RuntimeException(ex);
                     }
 
-                    AALibrary.printHorses(raceHorses);
+                    AALibrary.printHorses(raceHorses);//PRINT FOR DEBUGGING
                     ((Timer)e.getSource()).stop();
 
-                    // Always show one button: "View Stats"
                     Object[] options = {"View Stats"};
 
-                    String message = (winner != null)
+                    String message = (winner != null) //message based on outcome
                             ? "The winner is " + winner.getName() + "!"
                             : "All horses fell!";
 
-                    // Show dialog
+
                     JOptionPane.showOptionDialog(
                             Race.this.RaceMenu,
                             message,
@@ -170,7 +178,8 @@ public class Race
                             options[0]
                     );
 
-                    // Run stats method after dialog is dismissed
+                    // POST RACE METHODS ---
+
                     RaceMenu.dispose();
                     RaceFinishedUI();
 
@@ -182,8 +191,6 @@ public class Race
 
         RaceTimer.start();
     }
-
-
 
 
 
@@ -211,6 +218,10 @@ public class Race
      * on its confidence rating
      * A fallen horse cannot move
      *
+     * Added factors to take weather into account. if weather is more intense,
+     * it will move less, and more chance to fall, else reverse.
+     * Intensity goes in following order: Mud -> Rain -> Snow
+     *
      * @param theHorse the horse to be moved
      */
     private void moveHorse(Horse theHorse)
@@ -220,7 +231,8 @@ public class Race
         if  (!theHorse.hasFallen())
         {
             //the probability that the horse will move forward depends on the confidence;
-            double successThreshold = theHorse.getConfidence(); // Base threshold
+
+            double successThreshold = theHorse.getConfidence();
 
             if (weatherCondition.equals("Mud")) {
                 successThreshold *= 0.95;  // 5% harder
@@ -239,6 +251,7 @@ public class Race
             //the probability that the horse will fall is very small (max is 0.1)
             //but will also will depends exponentially on confidence
             //so if you double the confidence, the probability that it will fall is *2
+            //factor will increase chance of fall.
             double factor = 0.02;
             if(weatherCondition.equals("Mud")){
                 factor = 0.04;
@@ -260,14 +273,14 @@ public class Race
 
 
     /***
-     * Print the race on the terminal
+     * Print the race repeatedly on UI
      */
     private void printRace() {
         RacePanel.removeAll();
         RacePanel.setLayout(new BoxLayout(RacePanel, BoxLayout.Y_AXIS));
 
         Color textColor = AALibrary.getColorFromString(fontColour);
-        Font boldFont = new Font("Monospaced", Font.BOLD, 12);  // Only change: Font.BOLD
+        Font boldFont = new Font("Monospaced", Font.BOLD, 12);
 
         // Top border
         JLabel topBorder = new JLabel(new String(new char[raceLength+3]).replace('\0', '='));
@@ -296,7 +309,7 @@ public class Race
         bottomBorder.setForeground(textColor);
         RacePanel.add(bottomBorder);
 
-        // Weather message (now bold)
+        // Weather message
         JLabel weatherLabel;
         if (weatherCondition.equals("Mud")) {
             weatherLabel = new JLabel("The weather is kind of muddy today...");
@@ -307,14 +320,21 @@ public class Race
         } else {
             weatherLabel = new JLabel("The weather is normal today!");
         }
-        weatherLabel.setFont(boldFont);  // Bold weather text
+        weatherLabel.setFont(boldFont);
         weatherLabel.setForeground(textColor);
         RacePanel.add(weatherLabel);
 
+        //repaint and edit each repeat.
         RacePanel.revalidate();
         RacePanel.repaint();
     }
 
+    /**
+     * Return the lane, for spaces before and after each text.
+     * Replacing previous multipleLane and printLane method.
+     * @param theHorse
+     * @return
+     */
     private String getLaneString(Horse theHorse) {
         int spacesBefore = theHorse.getDistanceTravelled();
         int spacesAfter = raceLength - theHorse.getDistanceTravelled();
@@ -331,7 +351,14 @@ public class Race
         return lane.toString();
     }
 
-
+    /**
+     * Take a random number and choose weather based on return
+     * 25% Chance of normal weather
+     * 40% Chance of Muddy weather
+     * 30% Chance of Rain
+     * 5% Chance of Snow
+     * @return
+     */
     public static String FindWeatherFactor(){
         double val =Math.round(Math.random()*100)/100.0;
         if(val >= 0.0 && val < 0.25){
@@ -371,23 +398,10 @@ public class Race
     }
 
 
-    private boolean isRaceFinished(Horse[] x){
-        for(Horse x1 : x) {
-            if(x1 == null){
-                continue;
-            }
-            if(!x1.hasFallen()){
-                return false;
-            }
-        }
-        return true;
-    }
-
     /**
      * Method to execute at the end of any race
      * @param RaceHorses
      */
-
     private void FinishedRace(Horse[] RaceHorses){
         //Reset horses
         for (Horse x : RaceHorses) {
@@ -397,6 +411,10 @@ public class Race
         }
     }
 
+
+    /**
+     * Close all UI when cancel race is pressed or when race is terminated.
+     */
     public void closeUI(){
         if (RaceTimer != null && RaceTimer.isRunning()) {
             RaceTimer.stop();
@@ -414,6 +432,9 @@ public class Race
         Main.RTMM();
     }
 
+    /**
+     * Post race method, to open up game statistics.
+     */
     public void RaceFinishedUI(){
         JFrame statsFrame = new JFrame("Game Statistics");
         statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
@@ -423,31 +444,30 @@ public class Race
         // ==================== TITLE PANEL ====================
         JPanel titlePanel = new JPanel();
         titlePanel.setLayout(new BorderLayout());
-        titlePanel.setPreferredSize(new Dimension(0, 100)); // Height of title panel
+        titlePanel.setPreferredSize(new Dimension(0, 100));
 
-        JLabel titleLabel = new JLabel("Race Statistics", SwingConstants.CENTER); // Center aligned
+        JLabel titleLabel = new JLabel("Race Statistics", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
         titleLabel.setForeground(Color.BLACK);
         titleLabel.setOpaque(false);
         titlePanel.add(titleLabel, BorderLayout.CENTER);
 
         if(stats.getWinner() != null){
-            JLabel winnerLabel = new JLabel("Winner: " + stats.getWinner().getName(), SwingConstants.CENTER); // Center aligned
+            JLabel winnerLabel = new JLabel("Winner: " + stats.getWinner().getName(), SwingConstants.CENTER);
             winnerLabel.setFont(new Font("Arial", Font.BOLD, 20));
             winnerLabel.setForeground(Color.BLACK);
             winnerLabel.setOpaque(false);
-            titlePanel.add(winnerLabel, BorderLayout.SOUTH); // Add to panel, not to another label
+            titlePanel.add(winnerLabel, BorderLayout.SOUTH);
         }
         else{
-            JLabel winnerLabel = new JLabel("There was no winner this game", SwingConstants.CENTER); // Center aligned
+            JLabel winnerLabel = new JLabel("There was no winner this game", SwingConstants.CENTER);
             winnerLabel.setFont(new Font("Arial", Font.BOLD, 12));
             winnerLabel.setForeground(Color.BLACK);
             winnerLabel.setOpaque(false);
-            titlePanel.add(winnerLabel, BorderLayout.SOUTH); // Add to panel, not to another label
+            titlePanel.add(winnerLabel, BorderLayout.SOUTH);
         }
 
         // ==================== TABLE PANEL ====================
-        // Column headers
         String[] columns = {"Lane", "Symbol", "Name", "Confidence", "Avg Speed", "Time Taken"};
 
         DefaultTableModel model = new DefaultTableModel(columns, 0) {
@@ -512,9 +532,5 @@ public class Race
         // Center and show
         statsFrame.setLocationRelativeTo(RaceMenu);
         statsFrame.setVisible(true);
-    }
-
-    public static void RaceAgain(){
-
     }
 }

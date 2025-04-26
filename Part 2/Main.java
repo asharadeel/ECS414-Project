@@ -1,12 +1,8 @@
-
-import java.util.*;
-
-
 /**
  * Main Method to execute the Horse Race in terminal
  *
  * @author ashar
- * @version 1.6
+ * @version 2.1
  */
 public class Main {
     static Horse[] raceHorses;
@@ -18,7 +14,10 @@ public class Main {
     }
 
 
-    // Called when GetRaceInfoUI confirms horses
+    /**
+     * Start a Race, using the Race class
+     * @param dataR - Normally used for when "race again" is used, to use previous data.
+     */
     public static void startRace(RaceData dataR) {
         previousData= dataR;
         raceHorses = dataR.horses;
@@ -36,7 +35,7 @@ public class Main {
 
         race.startRace();
     }
-
+    //Race using previous variables
     public static void startRace() {
         RaceData dataR = previousData;
         raceHorses = dataR.horses;
@@ -55,16 +54,23 @@ public class Main {
         race.startRace();
     }
 
-
+    /**
+     * Open Return to Main Menu Window.
+     */
     public static void RTMM(){
         MainMenu.showUI();
     }
 
+
+    /**
+     * This is for starting a new race, which will use bets.
+     * @param dataR
+     */
     public static void StartBets(RaceData dataR){
         previousData= dataR;
         Bets = new Better(dataR);
     }
-
+    //For repeated race with new bets
     public static void StartBets(){
         RaceData dataR = previousData;
         Bets = new Better(dataR);

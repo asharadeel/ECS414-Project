@@ -1,3 +1,9 @@
+/**
+ * Subclass of Horse to track more details
+ * @author ashar
+ * @versio 1.1
+ */
+
 public class HorseData extends Horse{
     private int lane;
     private double averageSpeed;
@@ -13,8 +19,6 @@ public class HorseData extends Horse{
         super(horse.getSymbol(), horse.getName(), horse.getConfidence());
     }
 
-
-    //ACCESSORS
 
     public int getLane(){
         return lane;
@@ -43,8 +47,6 @@ public class HorseData extends Horse{
         return this.timeTaken;
     }
 
-    //MUTATORS
-
     /**
      * Sets the verification status of the horse
      * @param horseChecked true if the horse has been verified, false otherwise
@@ -68,11 +70,18 @@ public class HorseData extends Horse{
         this.timeTaken = timeTaken;
     }
 
-
+    /**
+     * Set the lane the horse is in.
+     * @param lane
+     */
     public void setLane(int lane) {
         this.lane = lane;
     }
 
+    /**
+     * Set the distance travelled
+     * @param distanceTravelled
+     */
     public void setDistanceTravelled(int distanceTravelled) {
         super.distance = distanceTravelled;
     }
