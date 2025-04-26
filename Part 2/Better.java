@@ -1,9 +1,10 @@
+import java.awt.event.ActionListener;
 import java.util.*;
 import java.awt.*;
 import java.util.List;
 import javax.swing.*;
 
-// 
+//
 public class Better {
     User user = new User();
 
@@ -84,7 +85,7 @@ public class Better {
         // 3. Bottom Panel - Buttons
         JPanel bottomPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 20));
 
-        JButton closeButton = new JButton("Close");
+        JButton closeButton = new JButton("Start Race!");
         closeButton.addActionListener(e -> {
             predictedWinner = winnerDropdown.getSelectedItem().toString();
             System.out.println("PREDICTED WINNER = " + predictedWinner);
@@ -113,11 +114,14 @@ public class Better {
         // Distance
         JPanel distancePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         distancePanel.add(new JLabel("Distance:"));
+        JRadioButton distanceNone = new JRadioButton("None", true); // Default selected
         JRadioButton distanceValue = new JRadioButton("Value");
         JRadioButton distanceRegion = new JRadioButton("Region");
         ButtonGroup distanceGroup = new ButtonGroup();
+        distanceGroup.add(distanceNone);
         distanceGroup.add(distanceValue);
         distanceGroup.add(distanceRegion);
+        distancePanel.add(distanceNone);
         distancePanel.add(distanceValue);
         distancePanel.add(distanceRegion);
 
@@ -132,11 +136,14 @@ public class Better {
         // Speed
         JPanel speedPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         speedPanel.add(new JLabel("Average Speed:"));
+        JRadioButton speedNone = new JRadioButton("None", true); // Default selected
         JRadioButton speedValue = new JRadioButton("Value");
         JRadioButton speedRegion = new JRadioButton("Region");
         ButtonGroup speedGroup = new ButtonGroup();
+        speedGroup.add(speedNone);
         speedGroup.add(speedValue);
         speedGroup.add(speedRegion);
+        speedPanel.add(speedNone);
         speedPanel.add(speedValue);
         speedPanel.add(speedRegion);
 
@@ -151,11 +158,14 @@ public class Better {
         // Time
         JPanel timePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         timePanel.add(new JLabel("Time:"));
+        JRadioButton timeNone = new JRadioButton("None", true); // Default selected
         JRadioButton timeValue = new JRadioButton("Value");
         JRadioButton timeRegion = new JRadioButton("Region");
         ButtonGroup timeGroup = new ButtonGroup();
+        timeGroup.add(timeNone);
         timeGroup.add(timeValue);
         timeGroup.add(timeRegion);
+        timePanel.add(timeNone);
         timePanel.add(timeValue);
         timePanel.add(timeRegion);
 
@@ -167,7 +177,14 @@ public class Better {
         JTextField timeMaxField = new JTextField(5);
         timePanel.add(timeInputPanel);
 
-        // Add radio button listeners to show/hide fields
+        // Add radio button listeners
+        ActionListener clearInputs = e -> {
+            distanceInputPanel.removeAll();
+            distanceInputPanel.revalidate();
+            distanceInputPanel.repaint();
+        };
+
+        distanceNone.addActionListener(clearInputs);
         distanceValue.addActionListener(e -> {
             distanceInputPanel.removeAll();
             distanceInputPanel.add(new JLabel("Value:"));
@@ -175,7 +192,6 @@ public class Better {
             distanceInputPanel.revalidate();
             distanceInputPanel.repaint();
         });
-
         distanceRegion.addActionListener(e -> {
             distanceInputPanel.removeAll();
             distanceInputPanel.add(new JLabel("Min:"));
@@ -186,6 +202,11 @@ public class Better {
             distanceInputPanel.repaint();
         });
 
+        speedNone.addActionListener(e -> {
+            speedInputPanel.removeAll();
+            speedInputPanel.revalidate();
+            speedInputPanel.repaint();
+        });
         speedValue.addActionListener(e -> {
             speedInputPanel.removeAll();
             speedInputPanel.add(new JLabel("Value:"));
@@ -193,7 +214,6 @@ public class Better {
             speedInputPanel.revalidate();
             speedInputPanel.repaint();
         });
-
         speedRegion.addActionListener(e -> {
             speedInputPanel.removeAll();
             speedInputPanel.add(new JLabel("Min:"));
@@ -204,6 +224,11 @@ public class Better {
             speedInputPanel.repaint();
         });
 
+        timeNone.addActionListener(e -> {
+            timeInputPanel.removeAll();
+            timeInputPanel.revalidate();
+            timeInputPanel.repaint();
+        });
         timeValue.addActionListener(e -> {
             timeInputPanel.removeAll();
             timeInputPanel.add(new JLabel("Value:"));
@@ -211,7 +236,6 @@ public class Better {
             timeInputPanel.revalidate();
             timeInputPanel.repaint();
         });
-
         timeRegion.addActionListener(e -> {
             timeInputPanel.removeAll();
             timeInputPanel.add(new JLabel("Min:"));
@@ -234,46 +258,43 @@ public class Better {
                 BetProfile current = new BetProfile(user, new HorseData(horse));
                 boolean hasBets = false;
 
-                // Validate and add distance bet
-                if (distanceValue.isSelected() || distanceRegion.isSelected()) {
+                // Distance bet
+                if (distanceValue.isSelected()) {
+                    int value = validateField(distanceSingleField, "Distance");
+                    current.BetDistance(value);
                     hasBets = true;
-                    if (distanceValue.isSelected()) {
-                        int value = validateField(distanceSingleField, "Distance");
-                        current.BetDistance(value);
-                    } else {
-                        int min = validateField(distanceMinField, "Distance Min");
-                        int max = validateField(distanceMaxField, "Distance Max");
-                        if (min >= max) throw new IllegalArgumentException("Distance Min must be less than Max");
-                        current.BetDistance(min, max);
-                    }
+                } else if (distanceRegion.isSelected()) {
+                    int min = validateField(distanceMinField, "Distance Min");
+                    int max = validateField(distanceMaxField, "Distance Max");
+                    if (min >= max) throw new IllegalArgumentException("Distance Min must be less than Max");
+                    current.BetDistance(min, max);
+                    hasBets = true;
                 }
 
-                // Validate and add speed bet
-                if (speedValue.isSelected() || speedRegion.isSelected()) {
+                // Speed bet
+                if (speedValue.isSelected()) {
+                    int value = validateField(speedSingleField, "Speed");
+                    current.BetAvgSpeed(value);
                     hasBets = true;
-                    if (speedValue.isSelected()) {
-                        int value = validateField(speedSingleField, "Speed");
-                        current.BetAvgSpeed(value);
-                    } else {
-                        int min = validateField(speedMinField, "Speed Min");
-                        int max = validateField(speedMaxField, "Speed Max");
-                        if (min >= max) throw new IllegalArgumentException("Speed Min must be less than Max");
-                        current.BetAvgSpeed(min, max);
-                    }
+                } else if (speedRegion.isSelected()) {
+                    int min = validateField(speedMinField, "Speed Min");
+                    int max = validateField(speedMaxField, "Speed Max");
+                    if (min >= max) throw new IllegalArgumentException("Speed Min must be less than Max");
+                    current.BetAvgSpeed(min, max);
+                    hasBets = true;
                 }
 
-                // Validate and add time bet
-                if (timeValue.isSelected() || timeRegion.isSelected()) {
+                // Time bet
+                if (timeValue.isSelected()) {
+                    int value = validateField(timeSingleField, "Time");
+                    current.BetTime(value);
                     hasBets = true;
-                    if (timeValue.isSelected()) {
-                        int value = validateField(timeSingleField, "Time");
-                        current.BetTime(value);
-                    } else {
-                        int min = validateField(timeMinField, "Time Min");
-                        int max = validateField(timeMaxField, "Time Max");
-                        if (min >= max) throw new IllegalArgumentException("Time Min must be less than Max");
-                        current.BetTime(min, max);
-                    }
+                } else if (timeRegion.isSelected()) {
+                    int min = validateField(timeMinField, "Time Min");
+                    int max = validateField(timeMaxField, "Time Max");
+                    if (min >= max) throw new IllegalArgumentException("Time Min must be less than Max");
+                    current.BetTime(min, max);
+                    hasBets = true;
                 }
 
                 if (!hasBets) {
