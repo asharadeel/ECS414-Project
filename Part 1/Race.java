@@ -258,7 +258,7 @@ public class Race
     private void UpdateConfidence(Horse[] RaceHorses, Horse Winner){
         if(Winner != (null)) { //not always a winner
             double factor = Math.round(Math.random() * 0.1 * 100.0) / 100.0;
-            double winnersConf = Winner.getConfidence() + factor; //slight increase
+            double winnersConf = Winner.getConfidence() + factor;
             Winner.setConfidence(winnersConf);
         }
 
