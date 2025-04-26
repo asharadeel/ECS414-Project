@@ -2,7 +2,6 @@ public class HorseData extends Horse{
     private int lane;
     private double averageSpeed;
     private double timeTaken;
-    private boolean winner;
     private boolean horseChecked;
 
 
@@ -13,6 +12,7 @@ public class HorseData extends Horse{
     public HorseData(Horse horse) {
         super(horse.getSymbol(), horse.getName(), horse.getConfidence());
     }
+
 
     //ACCESSORS
 
@@ -43,14 +43,6 @@ public class HorseData extends Horse{
         return this.timeTaken;
     }
 
-    /**
-     * Checks if the horse is a winner
-     * @return true if the horse won the race, false otherwise
-     */
-    public boolean isWinner() {
-        return this.winner;
-    }
-
     //MUTATORS
 
     /**
@@ -76,15 +68,13 @@ public class HorseData extends Horse{
         this.timeTaken = timeTaken;
     }
 
-    /**
-     * Sets the winner status of the horse
-     * @param winner true if the horse won, false otherwise
-     */
-    public void setWinner(boolean winner) {
-        this.winner = winner;
-    }
 
     public void setLane(int lane) {
         this.lane = lane;
     }
+
+    public void setDistanceTravelled(int distanceTravelled) {
+        super.distance = distanceTravelled;
+    }
+
 }

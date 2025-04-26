@@ -115,10 +115,10 @@ public class AALibrary {
                             " | AvgSpeed: " + x.getAverageSpeed() +
                             " | Time Taken: " + x.getTimeTaken() +
                             " | Checked?: " + x.isHorseChecked() +
-                            " | Winner?: " + x.isWinner());
+                            " | Lane: " + x.getLane());
             }
             else {
-                System.out.println(count + " = null index");
+                System.out.println("\n"+count + " = null index");
             }
             count++;
         }

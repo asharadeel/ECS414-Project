@@ -9,11 +9,11 @@
 public class Horse
 {
     //DECLARATIONS
-    private String name;
-    private char symbol;
-    private int distance;
-    private boolean fall;
-    private double confidence;
+    protected String name;
+    protected char symbol;
+    protected int distance;
+    protected boolean fall;
+    protected double confidence;
 
     /**
      * Constructor Method

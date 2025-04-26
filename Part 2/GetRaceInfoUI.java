@@ -8,7 +8,7 @@ public class GetRaceInfoUI {
     static Horse[] finalHorses = new Horse[10];
     static Character[] horseIcons = {'♔','♕','♖','♗','♘','♚','♛','♜','♝','♞'};
     static Integer[] lanes = {1,2,3,4,5,6,7,8,9,10};
-    static String[] colours = {"WHITE","BLACK","RED","GREEN","BLUE","CYAN","MAGNETA","PINK"};
+    static String[] colours = {"WHITE","BLACK","RED","GREEN","BLUE","CYAN","MAGENTA","PINK"};
     static DefaultComboBoxModel<Character> iconModel;
     static DefaultComboBoxModel<Integer> laneModel;
     static DefaultComboBoxModel<String> colourModel;
@@ -290,7 +290,7 @@ public class GetRaceInfoUI {
                     RaceData raceData = new RaceData();
                     raceData.horses = finalHorses;
                     raceData.fontColour = fontColourDropdown.getSelectedItem().toString();
-                    raceData.backgroundColour = fontColourDropdown.getSelectedItem().toString();
+                    raceData.backgroundColour = colourDropdown.getSelectedItem().toString();
                     raceData.RaceLength = raceLengthField.getValue();
 
                     Main.startRace(raceData);
