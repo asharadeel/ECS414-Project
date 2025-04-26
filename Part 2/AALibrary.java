@@ -93,6 +93,8 @@ public class AALibrary {
             }
             count++;
         }
+        System.out.println("\nEND OF HORSES ARRAY ---------");
+
     }
 
     public static void printHorses(HorseData[] h){
@@ -122,6 +124,6 @@ public class AALibrary {
             }
             count++;
         }
-        System.out.println("----------------------------------------------");
+        System.out.println("\n----------------------------------------------");
     }
 }
