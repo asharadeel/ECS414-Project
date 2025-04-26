@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.util.*;
 import javax.swing.*;
 import javax.swing.Timer;
+import javax.swing.table.DefaultTableModel;
 
 /**
  * A multi-horse (2-10) race
@@ -40,9 +41,9 @@ public class Race
         raceLength = distance;
     }
 
-    public void setColours(String f, String b){
-        fontColour = f;
-        backgroundColour = b;
+    public void setColours(String fc, String bc){
+        fontColour = fc;
+        backgroundColour = bc;
     }
 
     /**
@@ -58,11 +59,10 @@ public class Race
     public void startRace() {
         RaceMenu = new JFrame("Race!");
 
-        int frameWidth = raceLength*10;
+        int frameWidth = raceLength*9;
         RaceMenu.setSize(frameWidth, 300);
 
-        RaceMenu.setBackground(AALibrary.getColorFromString(backgroundColour));
-
+        System.out.println(backgroundColour);
         RacePanel = new JPanel();
         RacePanel.setLayout(new BoxLayout(RacePanel, BoxLayout.Y_AXIS));
         JScrollPane scrollPane = new JScrollPane(RacePanel);
@@ -70,7 +70,8 @@ public class Race
         RaceMenu.setVisible(true);
         RaceMenu.setLocationRelativeTo(null);
         RacePanel.setOpaque(true);
-        RacePanel.setBackground(Color.WHITE);
+        RacePanel.setBackground(AALibrary.getColorFromString(backgroundColour));
+
 
 
         JMenuBar menuBar = new JMenuBar();
@@ -90,7 +91,7 @@ public class Race
 
         // - -- - -- - GAME STARTS HERE
         weatherCondition = FindWeatherFactor();
-        stats = new GameStatistics(raceLength, raceHorses);
+        stats = new GameStatistics(raceLength);
 
         // Reset all horses
         for(Horse x : raceHorses) {
@@ -103,27 +104,34 @@ public class Race
         RaceTimer = new Timer(100, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 boolean finished = false;
+                int index = 0;
                 Horse winner = null;
+                boolean allFell = true;
+
 
                 // Move each horse
                 for(Horse x : raceHorses) {
-                    if(x != null && !x.hasFallen()) {
-                        moveHorse(x);
-                        stats.detect();
+                    if(x == null){
+                        continue;
                     }
-                }
-
-                // Check race completion
-                boolean allFell = true;
-                for (Horse x : raceHorses) {
-                    if(x == null) continue;
+                    if(!x.hasFallen()) {
+                        moveHorse(x);
+                        allFell = false;
+                    }
+                    if(x.hasFallen()){
+                        stats.HorseFinished(x, index);
+                    }
                     if (raceWonBy(x)) {
+                        stats.HorseFinished(x, index);
+                        stats.setWinner(x);
                         finished = true;
                         winner = x;
                         break;
                     }
-                    if (!x.hasFallen()) allFell = false;
+                    index++;
+                    stats.trackTime();
                 }
+
 
                 // Update display
                 printRace();
@@ -132,20 +140,34 @@ public class Race
 
                 // Check if race finished
                 if (finished || allFell) {
-                    stats.setFinished();
                     stats.finished();
 
                     AALibrary.printHorses(raceHorses);
                     ((Timer)e.getSource()).stop();
-                    if (winner != null) {
-                        System.out.println("Winner = " + winner.getName());
-                        JOptionPane.showMessageDialog(Race.this.RaceMenu, "The winner is " + winner.getName() + "!");
-                    } else {
-                        JOptionPane.showMessageDialog(Race.this.RaceMenu, "All horses fell!");
-                    }
 
+                    // Always show one button: "View Stats"
+                    Object[] options = {"View Stats"};
 
-                    RaceFinishedUI(stats);
+                    String message = (winner != null)
+                            ? "The winner is " + winner.getName() + "!"
+                            : "All horses fell!";
+
+                    // Show dialog
+                    JOptionPane.showOptionDialog(
+                            Race.this.RaceMenu,
+                            message,
+                            "Race Finished",
+                            JOptionPane.DEFAULT_OPTION,
+                            JOptionPane.INFORMATION_MESSAGE,
+                            null,
+                            options,
+                            options[0]
+                    );
+
+                    // Run stats method after dialog is dismissed
+                    RaceMenu.dispose();
+                    RaceFinishedUI();
+
                     UpdateConfidence(raceHorses, winner);
                     FinishedRace(raceHorses);
                 }
@@ -235,38 +257,53 @@ public class Race
      * Print the race on the terminal
      */
     private void printRace() {
-        RacePanel.removeAll(); // Clear previous content
+        RacePanel.removeAll();
         RacePanel.setLayout(new BoxLayout(RacePanel, BoxLayout.Y_AXIS));
 
-        // Add top border
-        RacePanel.add(new JLabel(new String(new char[raceLength+3]).replace('\0', '=')));
+        Color textColor = AALibrary.getColorFromString(fontColour);
+        Font boldFont = new Font("Monospaced", Font.BOLD, 12);  // Only change: Font.BOLD
 
-        // Print each horse's lane
-        for(int i = 0; i < raceHorses.length; i++) {
-            if(raceHorses[i] != null) {
+        // Top border
+        JLabel topBorder = new JLabel(new String(new char[raceLength+3]).replace('\0', '='));
+        topBorder.setFont(boldFont);
+        topBorder.setForeground(textColor);
+        RacePanel.add(topBorder);
+
+        // Horse lanes
+        for (int i = 0; i < raceHorses.length; i++) {
+            if (raceHorses[i] != null) {
                 JLabel laneLabel = new JLabel(getLaneString(raceHorses[i]));
-                laneLabel.setFont(new Font(Font.MONOSPACED, Font.PLAIN, 12));
+                laneLabel.setFont(boldFont);
+                laneLabel.setForeground(textColor);
                 RacePanel.add(laneLabel);
             } else {
-                RacePanel.add(new JLabel(" "));
+                JLabel emptyLabel = new JLabel(" ");
+                emptyLabel.setFont(boldFont);
+                emptyLabel.setForeground(textColor);
+                RacePanel.add(emptyLabel);
             }
         }
 
-        // Add bottom border
-        RacePanel.add(new JLabel(new String(new char[raceLength+3]).replace('\0', '=')));
+        // Bottom border
+        JLabel bottomBorder = new JLabel(new String(new char[raceLength+3]).replace('\0', '='));
+        bottomBorder.setFont(boldFont);
+        bottomBorder.setForeground(textColor);
+        RacePanel.add(bottomBorder);
 
-        RacePanel.add(new JLabel(""));
-
-        if(weatherCondition.equals("Mud")) {
-            RacePanel.add(new JLabel(new String("The weather is kind of muddy today...")));
+        // Weather message (now bold)
+        JLabel weatherLabel;
+        if (weatherCondition.equals("Mud")) {
+            weatherLabel = new JLabel("The weather is kind of muddy today...");
+        } else if (weatherCondition.equals("Rain")) {
+            weatherLabel = new JLabel("It is raining today");
+        } else if (weatherCondition.equals("Snow")) {
+            weatherLabel = new JLabel("There is snow on the track!");
+        } else {
+            weatherLabel = new JLabel("The weather is normal today!");
         }
-        else if(weatherCondition.equals("Rain")) {
-            RacePanel.add(new JLabel(new String("It is raining today")));
-        }
-        else if(weatherCondition.equals("Snow")) {
-            RacePanel.add(new JLabel(new String("There is snow on the track!")));
-
-        }
+        weatherLabel.setFont(boldFont);  // Bold weather text
+        weatherLabel.setForeground(textColor);
+        RacePanel.add(weatherLabel);
 
         RacePanel.revalidate();
         RacePanel.repaint();
@@ -288,61 +325,6 @@ public class Race
         return lane.toString();
     }
 
-    /**
-     * print a horse's lane during the race
-     * for example
-     * |           X                      |
-     * to show how far the horse has run
-     */
-    private void printLane(Horse theHorse)
-    {
-        //calculate how many spaces are needed before
-        //and after the horse
-        int spacesBefore = theHorse.getDistanceTravelled();
-        int spacesAfter = raceLength - theHorse.getDistanceTravelled();
-
-        //print a | for the beginning of the lane
-        System.out.print('|');
-
-        //print the spaces before the horse
-        multiplePrint(' ',spacesBefore);
-
-        //if the horse has fallen then print dead
-        //else print the horse's symbol
-        if(theHorse.hasFallen())
-        {
-            System.out.print('☠');
-        }
-        else
-        {
-            System.out.print(theHorse.getSymbol());
-        }
-
-        //print the spaces after the horse
-        multiplePrint(' ',spacesAfter);
-
-        //print the | for the end of the track
-        System.out.print('|');
-
-        System.out.println(theHorse.getName() + " (Confidence: " + theHorse.getConfidence() + ")");
-
-    }
-
-    /***
-     * print a character a given number of times.
-     * e.g. printmany('x',5) will print: xxxxx
-     *
-     * @param aChar the character to Print
-     */
-    private void multiplePrint(char aChar, int times)
-    {
-        int i = 0;
-        while (i < times)
-        {
-            System.out.print(aChar);
-            i = i + 1;
-        }
-    }
 
     public static String FindWeatherFactor(){
         double val =Math.round(Math.random()*100)/100.0;
@@ -366,6 +348,7 @@ public class Race
      * @param Winner the winner of the race, if any
      */
     private void UpdateConfidence(Horse[] RaceHorses, Horse Winner){
+
         if(Winner != (null)) { //not always a winner
             double factor = Math.round(Math.random() * 0.1 * 100.0) / 100.0;
             double winnersConf = Winner.getConfidence() + factor; //slight increase
@@ -382,6 +365,17 @@ public class Race
     }
 
 
+    private boolean isRaceFinished(Horse[] x){
+        for(Horse x1 : x) {
+            if(x1 == null){
+                continue;
+            }
+            if(!x1.hasFallen()){
+                return false;
+            }
+        }
+        return true;
+    }
 
     /**
      * Method to execute at the end of any race
@@ -390,7 +384,6 @@ public class Race
 
     private void FinishedRace(Horse[] RaceHorses){
         //Reset horses
-        stats.finished();
         for (Horse x : RaceHorses) {
             if(x != null) {
                 x.resetHorse();
@@ -415,12 +408,82 @@ public class Race
         Main.RTMM();
     }
 
-    public static void RaceFinishedUI(GameStatistics stats){
-        JFrame RaceStatus = new JFrame("Race Status");
+    public void RaceFinishedUI(){
+        JFrame statsFrame = new JFrame("Game Statistics");
+        statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        statsFrame.setSize(900, 400);
+        statsFrame.setLayout(new BorderLayout());
 
+        // ==================== TITLE PANEL ====================
+        JPanel titlePanel = new JPanel();
+        titlePanel.setLayout(new BorderLayout());
+        titlePanel.setPreferredSize(new Dimension(0, 100)); // Height of title panel
 
+        JLabel titleLabel = new JLabel("Race Statistics", SwingConstants.CENTER);
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
+        titleLabel.setForeground(Color.BLACK);
+        titleLabel.setOpaque(false);
+        titlePanel.add(titleLabel, BorderLayout.CENTER);
 
+        // ==================== TABLE PANEL ====================
+        // Column headers
+        String[] columns = {"Lane", "Symbol", "Name", "Confidence", "Avg Speed", "Time Taken"};
+
+        DefaultTableModel model = new DefaultTableModel(columns, 0) {
+            @Override public boolean isCellEditable(int row, int column) { return false; }
+        };
+
+        // Add sorted horse data
+        Arrays.stream(stats.getHorses())
+                .filter(Objects::nonNull)
+                .sorted(Comparator.comparingInt(HorseData::getLane))
+                .forEach(horse -> model.addRow(new Object[]{
+                        horse.getLane(),
+                        horse.getSymbol(),
+                        horse.getName(),
+                        String.format("%.2f", horse.getConfidence()),
+                        String.format("%.2f", horse.getAverageSpeed()),
+                        String.format("%.2f", horse.getTimeTaken())
+                }));
+
+        JTable table = new JTable(model);
+        table.setAutoCreateRowSorter(true);
+        table.setRowHeight(30);
+        table.getColumnModel().getColumn(0).setMaxWidth(60);
+
+        JScrollPane tableScroll = new JScrollPane(table);
+
+        // ==================== BUTTON PANEL ====================
+        JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
+
+        JButton raceAgainBtn = new JButton("Race Again");
+        raceAgainBtn.setFont(new Font("Arial", Font.BOLD, 16));
+        raceAgainBtn.addActionListener(e -> {
+            statsFrame.dispose();
+            startRace();
+        });
+
+        JButton mainMenuBtn = new JButton("Return to Main Menu");
+        mainMenuBtn.setFont(new Font("Arial", Font.BOLD, 16));
+        mainMenuBtn.addActionListener(e -> {
+            statsFrame.dispose();
+            closeUI();
+
+        });
+
+        buttonPanel.add(raceAgainBtn);
+        buttonPanel.add(mainMenuBtn);
+
+        // ==================== ASSEMBLE FRAME ====================
+        statsFrame.add(titlePanel, BorderLayout.NORTH);
+        statsFrame.add(tableScroll, BorderLayout.CENTER);
+        statsFrame.add(buttonPanel, BorderLayout.SOUTH);
+
+        // Center and show
+        statsFrame.setLocationRelativeTo(RaceMenu);
+        statsFrame.setVisible(true);
     }
+
     public static void RaceAgain(){
 
     }
