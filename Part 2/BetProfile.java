@@ -7,7 +7,7 @@ public class BetProfile {
 
     //DECLARE THE HORSE TO BE SAVED
     private HorseData horse;
-
+    private boolean valid = false;
     //BET VALUES
     private int expectedTime = 0;
     private int expectedAvg = 0;
@@ -16,6 +16,8 @@ public class BetProfile {
     private int[] expectedTimeR = {0,0};
     private int[] expectedAvgR = {0,0};
     private int[] expectedDistanceR = {0,0};
+
+
 
     /**
      * Constructor for betting profile
@@ -164,6 +166,49 @@ public class BetProfile {
     }
 
 
+
+    public HorseData getHorseData(){
+        return horse;
+    }
+
+    public void setHorse(HorseData h){
+        this.horse = h;
+    }
+
+    public void valid(){
+        this.valid = true;
+    }
+
+
+    public int[] GetTimeBets() {
+        if (expectedTimeR[0] != 0 || expectedTimeR[1] != 0) {
+            return expectedTimeR; // Return the range if it exists
+        } else if (expectedTime != 0) {
+            return new int[]{expectedTime}; // Return single value
+        } else {
+            return new int[]{-1}; // No bet placed
+        }
+    }
+
+    public int[] GetDistanceBets() {
+        if (expectedDistanceR[0] != 0 || expectedDistanceR[1] != 0) {
+            return expectedDistanceR;
+        } else if (expectedDistance != 0) {
+            return new int[]{expectedDistance};
+        } else {
+            return new int[]{-1};
+        }
+    }
+
+    public int[] GetAverageSpeed() {
+        if (expectedAvgR[0] != 0 || expectedAvgR[1] != 0) {
+            return expectedAvgR;
+        } else if (expectedAvg != 0) {
+            return new int[]{expectedAvg};
+        } else {
+            return new int[]{-1};
+        }
+    }
 
 
 }

@@ -1,3 +1,4 @@
+import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.*;
 import java.awt.*;
@@ -351,6 +352,179 @@ public class Better {
             if(x != null) {
                 winnerModel.addElement(x.getName());
             }
+        }
+    }
+
+
+    /**
+     * Create UI to review bets
+     * @param stats - review stats and check against stats the horse
+     */
+    public void ReviewBets(GameStatistics stats) {
+        ReviewBetsLog(stats); //run for terminal
+        FinalHorses = stats.getHorses();
+
+        // Create the JFrame
+        JFrame betReviewFrame = new JFrame("Bet Review");
+        betReviewFrame.setSize(900, 400);
+        betReviewFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+        betReviewFrame.setLayout(new BorderLayout());
+
+        // ===== 1. TITLE PANEL =====
+        JPanel titlePanel = new JPanel();
+        JLabel titleLabel = new JLabel("BET REVIEW");
+        titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
+        titlePanel.add(titleLabel);
+        betReviewFrame.add(titlePanel, BorderLayout.NORTH);
+
+        // ===== 2. CONTENT PANEL =====
+        JPanel contentPanel = new JPanel();
+        contentPanel.setLayout(new BoxLayout(contentPanel, BoxLayout.Y_AXIS));
+        JScrollPane scrollPane = new JScrollPane(contentPanel);
+
+        // Build the results text
+        StringBuilder resultsText = new StringBuilder();
+
+        // Check winner prediction
+        if (stats.getWinner() != null) {
+            if (stats.getWinner().getName().equals(predictedWinner)) {
+                resultsText.append(" SUCCESSFUL GUESS OF THE WINNER!\n\n");
+            } else {
+                resultsText.append(" FAILURE GUESS OF THE WINNER!\n\n");
+            }
+        } else if (predictedWinner.equals("N/A")) {
+            resultsText.append(" SUCCESSFUL GUESS OF THE WINNER!\n\n");
+        } else {
+            resultsText.append(" FAILURE GUESS OF THE WINNER!\n\n");
+        }
+
+        // Update HorseData for each bet
+        Iterator<BetProfile> updater = Bets.iterator();
+        while (updater.hasNext()) {
+            BetProfile bet = updater.next();
+            for (HorseData x : FinalHorses) {
+                if (bet.getHorseData().getSymbol() == x.getSymbol()) {
+                    bet.setHorse(x);
+                    bet.valid();
+                    break;
+                }
+            }
+        }
+
+        // Review each bet
+        Iterator<BetProfile> iterator = Bets.iterator();
+        while (iterator.hasNext()) {
+            BetProfile bet = iterator.next();
+            resultsText.append("----------------------------------\n");
+            resultsText.append("Bet on Horse: ").append(bet.getHorseData().getName()).append("\n");
+
+            int[] avg = bet.GetAverageSpeed();
+            if (avg[0] != -1) {
+                boolean won = bet.CheckAverageBets();
+                resultsText.append("- Average Speed Bet: ").append(won ? " WON" : " LOST").append(" | ");
+                resultsText.append("Bet: ").append(avg.length == 1 ? "≥" + avg[0] : "Range [" + avg[0] + "km/h -" + avg[1] + "km/h]").append("\n");
+                resultsText.append("Actual: " + bet.getHorseData().getAverageSpeed() + "km/h.\n");
+            }
+
+            int[] time = bet.GetTimeBets();
+            if (time[0] != -1) {
+                boolean won = bet.CheckTimeBets();
+                resultsText.append("- Time Bet: ").append(won ? " WON" : " LOST").append(" | ");
+                resultsText.append("Bet: ").append(time.length == 1 ? "≤" + time[0] : "Range [" + time[0] + "s -" + time[1] + "s]").append("\n");
+                resultsText.append("Actual: " + bet.getHorseData().getTimeTaken() + "s.\n");
+            }
+
+            int[] distance = bet.GetDistanceBets();
+            if (distance[0] != -1) {
+                boolean won = bet.CheckDistanceBets();
+                resultsText.append("- Distance Bet: ").append(won ? " WON" : " LOST").append(" | ");
+                resultsText.append("Bet: ").append(distance.length == 1 ? "≥" + distance[0] : "Range [" + distance[0] + "m -" + distance[1] + "m]").append("\n");
+                resultsText.append("Actual: " + bet.getHorseData().getDistanceTravelled() + "m.\n");
+
+            }
+
+            resultsText.append("----------------------------------\n");
+        }
+
+        // Add results to a JTextArea
+        JTextArea textArea = new JTextArea(resultsText.toString());
+        textArea.setEditable(false);
+        textArea.setFont(new Font("Arial", Font.PLAIN, 14));
+        contentPanel.add(textArea);
+
+        betReviewFrame.add(scrollPane, BorderLayout.CENTER);
+
+        // ===== 3. BOTTOM PANEL (Close Button) =====
+        JPanel bottomPanel = new JPanel();
+        JButton closeButton = new JButton("Close");
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                betReviewFrame.dispose();
+            }
+        });
+        bottomPanel.add(closeButton);
+        betReviewFrame.add(bottomPanel, BorderLayout.SOUTH);
+
+        // Display the frame
+        betReviewFrame.setLocationRelativeTo(null);
+        betReviewFrame.setVisible(true);
+
+    }
+
+    /**
+     * Reviwe for terminal for bet status
+     * @param stats
+     */
+    public void ReviewBetsLog(GameStatistics stats) {
+        // Update HorseData for each bet
+        Iterator<BetProfile> updater = Bets.iterator();
+        while (updater.hasNext()) {
+            BetProfile bet = updater.next();
+            for (HorseData x : FinalHorses) {
+                if (bet.getHorseData().getSymbol() == x.getSymbol()) {
+                    bet.setHorse(x);
+                    bet.valid();
+                    break; // No need to check further once matched
+                }
+            }
+        }
+
+        // Review each bet
+        Iterator<BetProfile> iterator = Bets.iterator();
+        while (iterator.hasNext()) {
+            BetProfile bet = iterator.next();
+
+            System.out.println("\nBet on Horse: " + bet.getHorseData().getName());
+
+            // Check and print each bet type (only if placed)
+            int[] avg = bet.GetAverageSpeed();
+            if (avg[0] != -1) {
+                boolean won = bet.CheckAverageBets();
+                System.out.print("- Average Speed Bet: " + (won ? "WON" : "LOST") + " | ");
+                System.out.println("Bet: " + (avg.length == 1 ? "≥" + avg[0] : "Range [" + avg[0] + "km/h -" + avg[1] + "km/h]"));
+                System.out.println("Actual: " + bet.getHorseData().getAverageSpeed() + "km/h.");
+
+            }
+
+            int[] time = bet.GetTimeBets();
+            if (time[0] != -1) {
+                boolean won = bet.CheckTimeBets();
+                System.out.print("- Time Bet: " + (won ? "WON" : "LOST") + " | ");
+                System.out.println("Bet: " + (time.length == 1 ? "≤" + time[0] : "Range [" + time[0] + "ms-" + time[1] + "ms]"));
+                System.out.println("Actual: " + bet.getHorseData().getTimeTaken() + "ms.");
+
+            }
+
+            int[] distance = bet.GetDistanceBets();
+            if (distance[0] != -1) {
+                boolean won = bet.CheckDistanceBets();
+                System.out.print("- Distance Bet: " + (won ? "WON" : "LOST") + " | ");
+                System.out.println("Bet: " + (distance.length == 1 ? "≥" + distance[0] : "Range [" + distance[0] + "m-" + distance[1] + "m]"));
+                System.out.println("Actual: " + bet.getHorseData().getDistanceTravelled() + "m.");
+            }
+
+            System.out.println("----------------------------------");
         }
     }
 

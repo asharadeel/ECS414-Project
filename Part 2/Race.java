@@ -436,6 +436,8 @@ public class Race
      * Post race method, to open up game statistics.
      */
     public void RaceFinishedUI(){
+      //  Main.ReviewBets(stats);
+
         JFrame statsFrame = new JFrame("Game Statistics");
         statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         statsFrame.setSize(900, 400);
@@ -519,9 +521,15 @@ public class Race
             Main.StartBets();
         });
 
+        JButton reviewBets = new JButton("Review Bets");
+        reviewBets.setFont(new Font("Arial", Font.BOLD, 16));
+        reviewBets.addActionListener(e -> {
+            Main.ReviewBets(stats);
+        });
 
         buttonPanel.add(raceAgainBtn);
         buttonPanel.add(newGameWithBets);
+        buttonPanel.add(reviewBets);
         buttonPanel.add(mainMenuBtn);
 
         // ==================== ASSEMBLE FRAME ====================

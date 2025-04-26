@@ -76,12 +76,7 @@ public class Main {
         Bets = new Better(dataR);
     }
 
-
-
-
-
-
-
-
-
+    public static void ReviewBets(GameStatistics stats){
+        Bets.ReviewBets(stats);
+    }
 }
