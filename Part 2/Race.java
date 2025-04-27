@@ -1,4 +1,3 @@
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -12,7 +11,7 @@ import javax.swing.table.DefaultTableModel;
  * A multi-horse (2-10) race using interface
  *
  * @author McRaceface, ashar
- * @version 3.1
+ * @version 3.2
  */
 
 

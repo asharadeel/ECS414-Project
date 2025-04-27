@@ -3,6 +3,11 @@ import javax.swing.plaf.basic.BasicButtonUI;
 import java.awt.*;
 import java.awt.geom.RoundRectangle2D;
 
+/**
+ * Apply styles to all interface
+ * @author ashar
+ * @version 1.0
+ */
 public class GlobalStyler {
 
     /**

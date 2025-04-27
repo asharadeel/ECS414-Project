@@ -1,5 +1,8 @@
 /**
  * The Betting Profile for each horse - save all bets made on the horse, and values
+ *
+ * @author ashar
+ * @version 1.0
  */
 public class BetProfile {
     private User user;

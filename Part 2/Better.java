@@ -10,7 +10,7 @@ import javax.swing.*;
  * The main betting module for placing bets and retrieivng results
  *
  * @author ashar
- * @version 1.0.5
+ * @version 1.1
  */
 
 public class Better {
