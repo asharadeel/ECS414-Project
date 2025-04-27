@@ -34,7 +34,8 @@ public class GetRaceInfoUI {
      *  - take inputs for the race customisation - font colour and background details.
      */
     public static void showUI(){
-
+        createdHorses = new Horse[0];
+        finalHorses = new Horse[10];
         //CREATE MAIN FRAME AND SET BACKGROUND
         mainFrame = new JFrame("Horse Creator") {
             private Image backgroundImage;

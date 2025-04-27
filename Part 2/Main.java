@@ -83,4 +83,9 @@ public class Main {
     public static void UpdateBets(GameStatistics stats){
         Bets.UpdateBets(stats);
     }
+
+    public static void reset(){
+        raceHorses = null;
+        Bets = null;
+    }
 }

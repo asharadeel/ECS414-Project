@@ -92,6 +92,7 @@ public class Race
         cancelButton.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 closeUI();
+                Main.reset();
             }
         });
 
@@ -531,7 +532,7 @@ public class Race
         // ==================== BUTTON PANEL ====================
         JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.CENTER, 20, 10));
 
-        JButton raceAgainBtn = new JButton("Race Again");
+        JButton raceAgainBtn = new JButton("Race Again with Same Bets");
         raceAgainBtn.setFont(new Font("Arial", Font.BOLD, 16));
         raceAgainBtn.addActionListener(e -> {
             statsFrame.dispose();
