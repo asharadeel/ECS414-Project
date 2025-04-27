@@ -565,6 +565,22 @@ public class Race
         buttonPanel.add(reviewBets);
         buttonPanel.add(mainMenuBtn);
 
+
+        JMenuBar menuBar = new JMenuBar();
+        JMenu viewMenu = new JMenu("Statistics");
+        JMenuItem viewStats = new JMenuItem("Open Statistics Analysis");
+        viewStats.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                ViewStatistics view = new ViewStatistics(stats);
+                view.showUI();
+            }
+        });
+
+        viewMenu.add(viewStats);
+        menuBar.add(viewMenu);
+        statsFrame.setJMenuBar(menuBar);
+
+
         // ==================== ASSEMBLE FRAME ====================
         statsFrame.add(titlePanel, BorderLayout.NORTH);
         statsFrame.add(tableScroll, BorderLayout.CENTER);

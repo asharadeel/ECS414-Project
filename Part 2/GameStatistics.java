@@ -15,8 +15,14 @@ public class GameStatistics {
        raceFinished = false;
     }
 
+    public int getRaceLength() {
+        return raceLength;
+    }
     public HorseData[] getHorses(){
         return RaceHorseData;
+    }
+    public int getTime() {
+        return time;
     }
 
     public void finished() throws IOException {
