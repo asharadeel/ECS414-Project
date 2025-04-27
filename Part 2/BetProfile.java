@@ -99,7 +99,7 @@ public class BetProfile {
         }
         else{
             if(horse.getAverageSpeed() >= expectedAvgR[0] && horse.getAverageSpeed() <= expectedAvgR[1]){
-                user.addPoints(100);
+                user.addPoints(75/(expectedAvgR[1] - expectedAvgR[0]));
                 return true;
             }
             else return false;
@@ -121,7 +121,7 @@ public class BetProfile {
         }
         else{
             if(horse.getDistanceTravelled() >= expectedDistanceR[0] && horse.getDistanceTravelled() <= expectedDistanceR[1]){
-                user.addPoints(100);
+                user.addPoints(75/(expectedDistanceR[1] - expectedDistanceR[0]));
                 return true;
             }
             else return false;
@@ -143,7 +143,7 @@ public class BetProfile {
         }
         else{
             if(horse.getTimeTaken() >= expectedTimeR[0] && horse.getTimeTaken() <= expectedTimeR[1]){
-                user.addPoints(100);
+                user.addPoints(75/(expectedTimeR[1] - expectedTimeR[0]));
                 return true;
             }
             else return false;
@@ -209,6 +209,5 @@ public class BetProfile {
             return new int[]{-1};
         }
     }
-
 
 }

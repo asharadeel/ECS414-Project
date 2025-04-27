@@ -79,4 +79,8 @@ public class Main {
     public static void ReviewBets(GameStatistics stats){
         Bets.ReviewBets(stats);
     }
+
+    public static void UpdateBets(GameStatistics stats){
+        Bets.UpdateBets(stats);
+    }
 }

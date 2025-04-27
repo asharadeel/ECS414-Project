@@ -1,5 +1,6 @@
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 import java.util.*;
 import java.awt.*;
 import java.util.List;
@@ -297,8 +298,8 @@ public class Better {
                     current.BetTime(value);
                     hasBets = true;
                 } else if (timeRegion.isSelected()) {
-                    int min = validateField(timeMinField, "Time Min");
-                    int max = validateField(timeMaxField, "Time Max");
+                    int min = validateTimeField(timeMinField, "Time Min");
+                    int max = validateTimeField(timeMaxField, "Time Max");
                     if (min >= max) throw new IllegalArgumentException("Time Min must be less than Max");
                     current.BetTime(min, max);
                     hasBets = true;
@@ -343,6 +344,17 @@ public class Better {
         return value;
     }
 
+    private int validateTimeField(JTextField field, String fieldName) throws NumberFormatException {
+        if (field.getText().trim().isEmpty()) {
+            throw new NumberFormatException(fieldName + " cannot be empty");
+        }
+        int value = Integer.parseInt(field.getText());
+        if (value < 0 || value > 5000) {
+            throw new NumberFormatException(fieldName + " must be between 0-5000");
+        }
+        return value;
+    }
+
 
     private void initializeModels() {
         winnerModel = new DefaultComboBoxModel<String>();
@@ -361,9 +373,6 @@ public class Better {
      * @param stats - review stats and check against stats the horse
      */
     public void ReviewBets(GameStatistics stats) {
-        ReviewBetsLog(stats); //run for terminal
-        FinalHorses = stats.getHorses();
-
         // Create the JFrame
         JFrame betReviewFrame = new JFrame("Bet Review");
         betReviewFrame.setSize(900, 400);
@@ -421,6 +430,7 @@ public class Better {
             int[] avg = bet.GetAverageSpeed();
             if (avg[0] != -1) {
                 boolean won = bet.CheckAverageBets();
+
                 resultsText.append("- Average Speed Bet: ").append(won ? " WON" : " LOST").append(" | ");
                 resultsText.append("Bet: ").append(avg.length == 1 ? "≥" + avg[0] : "Range [" + avg[0] + "km/h -" + avg[1] + "km/h]").append("\n");
                 resultsText.append("Actual: " + bet.getHorseData().getAverageSpeed() + "km/h.\n");
@@ -429,6 +439,7 @@ public class Better {
             int[] time = bet.GetTimeBets();
             if (time[0] != -1) {
                 boolean won = bet.CheckTimeBets();
+
                 resultsText.append("- Time Bet: ").append(won ? " WON" : " LOST").append(" | ");
                 resultsText.append("Bet: ").append(time.length == 1 ? "≤" + time[0] : "Range [" + time[0] + "s -" + time[1] + "s]").append("\n");
                 resultsText.append("Actual: " + bet.getHorseData().getTimeTaken() + "s.\n");
@@ -437,6 +448,7 @@ public class Better {
             int[] distance = bet.GetDistanceBets();
             if (distance[0] != -1) {
                 boolean won = bet.CheckDistanceBets();
+
                 resultsText.append("- Distance Bet: ").append(won ? " WON" : " LOST").append(" | ");
                 resultsText.append("Bet: ").append(distance.length == 1 ? "≥" + distance[0] : "Range [" + distance[0] + "m -" + distance[1] + "m]").append("\n");
                 resultsText.append("Actual: " + bet.getHorseData().getDistanceTravelled() + "m.\n");
@@ -476,16 +488,20 @@ public class Better {
      * Reviwe for terminal for bet status
      * @param stats
      */
-    public void ReviewBetsLog(GameStatistics stats) {
+    public void UpdateBets(GameStatistics stats) {
         // Update HorseData for each bet
+        UpdateUser();
+        FinalHorses = stats.getHorses();
         Iterator<BetProfile> updater = Bets.iterator();
         while (updater.hasNext()) {
             BetProfile bet = updater.next();
             for (HorseData x : FinalHorses) {
-                if (bet.getHorseData().getSymbol() == x.getSymbol()) {
-                    bet.setHorse(x);
-                    bet.valid();
-                    break; // No need to check further once matched
+                if(x != null) {
+                    if (bet.getHorseData().getSymbol() == x.getSymbol()) {
+                        bet.setHorse(x);
+                        bet.valid();
+                        break; // No need to check further once matched
+                    }
                 }
             }
         }
@@ -511,7 +527,7 @@ public class Better {
             if (time[0] != -1) {
                 boolean won = bet.CheckTimeBets();
                 System.out.print("- Time Bet: " + (won ? "WON" : "LOST") + " | ");
-                System.out.println("Bet: " + (time.length == 1 ? "≤" + time[0] : "Range [" + time[0] + "ms-" + time[1] + "ms]"));
+                System.out.println("Bet: " + (time.length == 1 ? "≤=" + time[0] : "Range [" + time[0] + "ms-" + time[1] + "ms]"));
                 System.out.println("Actual: " + bet.getHorseData().getTimeTaken() + "ms.");
 
             }
@@ -526,7 +542,56 @@ public class Better {
 
             System.out.println("----------------------------------");
         }
+        //save user data
+        try {
+            user.Save();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
+    private void UpdateUser(){
+        System.out.println(" ##### USER UPDATED! #### ");
+        try {
+            // Check winner prediction
+            if (stats != null && stats.getWinner() != null) {
+                if (stats.getWinner().getName().equals(predictedWinner)) {
+                    user.addPoints(100);
+                }
+            } else if (predictedWinner != null && predictedWinner.equals("N/A")) {
+                user.addPoints(100);
+            }
 
+            // Review each bet if Bets exists
+            if (Bets != null) {
+                Iterator<BetProfile> iterator = Bets.iterator();
+                while (iterator.hasNext()) {
+                    BetProfile bet = iterator.next();
+                    if (bet != null) {
+                        // Check each bet type
+                        if (bet.CheckAverageBets()) {
+                            user.addBetWon();
+                        } else {
+                            user.addBetsLost();
+                        }
+
+                        if (bet.CheckTimeBets()) {
+                            user.addBetWon();
+                        } else {
+                            user.addBetsLost();
+                        }
+
+                        if (bet.CheckDistanceBets()) {
+                            user.addBetWon();
+                        } else {
+                            user.addBetsLost();
+                        }
+                    }
+                }
+            }
+        } catch (Exception e) {
+            System.err.println("Error updating user: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 }

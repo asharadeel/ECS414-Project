@@ -94,7 +94,16 @@ public class MainMenu {
         //JMENU
         JMenuBar MenuBar = new JMenuBar();
         JMenu History = new JMenu("History");
-        JMenuItem ViewHistory = new JMenuItem("View History");
+        JMenuItem ViewHistory = new JMenuItem("Race");
+        JMenuItem UserHistory = new JMenuItem("User");
+
+        UserHistory.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                User.ShowUser();
+            }
+        });
+
         ViewHistory.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -106,6 +115,7 @@ public class MainMenu {
             }
         });
 
+        History.add(UserHistory);
         History.add(ViewHistory);
         MenuBar.add(History);
 

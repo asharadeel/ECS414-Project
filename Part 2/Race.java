@@ -185,6 +185,7 @@ public class Race
 
                     UpdateConfidence(raceHorses, winner);
                     FinishedRace(raceHorses);
+                    Main.UpdateBets(stats);
                 }
             }
         });
@@ -403,7 +404,6 @@ public class Race
      * @param RaceHorses
      */
     private void FinishedRace(Horse[] RaceHorses){
-        //Reset horses
         for (Horse x : RaceHorses) {
             if(x != null) {
                 x.resetHorse();
