@@ -86,8 +86,14 @@ public class GetRaceInfoUI {
         // Create title panel
         JPanel titlePanel = new JPanel();
         titlePanel.setOpaque(false);
-        JLabel titleLabel = new JLabel("Create Race Elements");
-        titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
+        ImageIcon logoIcon = new ImageIcon("Images/racemanager.png");
+        Image image = logoIcon.getImage();
+        int maxWidth = 500;
+        Image scaledImage = image.getScaledInstance(maxWidth, -1, Image.SCALE_SMOOTH);
+        ImageIcon scaledLogoIcon = new ImageIcon(scaledImage);
+        JLabel titleLabel = new JLabel(scaledLogoIcon);
+
+
         titleLabel.setForeground(Color.white);
         titlePanel.add(titleLabel);
 

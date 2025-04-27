@@ -72,7 +72,13 @@ public class ViewStatistics {
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        JLabel title = new JLabel("Statistical Review", SwingConstants.CENTER);
+        ImageIcon logoIcon = new ImageIcon("Images/statistics.png");
+        Image image = logoIcon.getImage();
+        int maxWidth = 400;
+        Image scaledImage = image.getScaledInstance(maxWidth, -1, Image.SCALE_SMOOTH);
+        ImageIcon scaledLogoIcon = new ImageIcon(scaledImage);
+        JLabel title = new JLabel(scaledLogoIcon);
+
         title.setFont(new Font("Arial", Font.BOLD, 32));  // Set title font size to 32
         title.setAlignmentX(Component.CENTER_ALIGNMENT); // Center title horizontally
         JLabel caption = new JLabel("Press the View option to select table", SwingConstants.CENTER);

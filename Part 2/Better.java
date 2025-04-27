@@ -40,7 +40,7 @@ public class Better {
 
         JFrame frame = new JFrame("GAMBLR - Place Your Bets");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.setSize(900, 400);
+        frame.setExtendedState(JFrame.MAXIMIZED_BOTH);
         frame.setLayout(new BorderLayout());
 
         // 1. Top Panel - Title
@@ -77,7 +77,8 @@ public class Better {
             }
         };
 
-        JLabel titleLabel = new JLabel("GAMBLR");
+        ImageIcon logoIcon = new ImageIcon("Images/gamblr.png");
+        JLabel titleLabel = new JLabel(logoIcon);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
         titleLabel.setForeground(new Color(255, 255, 255));
         topPanel.add(titleLabel);
