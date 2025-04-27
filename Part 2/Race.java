@@ -73,8 +73,10 @@ public class Race
         //CREATE INTERFACE --------------
         RaceMenu = new JFrame("Race!");
 
-        int frameWidth = raceLength*10;
-        RaceMenu.setSize(frameWidth, 300);
+        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+        RaceMenu.setSize((int) screenSize.getWidth(),(int) screenSize.getHeight());
+        RaceMenu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+        RaceMenu.setUndecorated(true);
 
         RacePanel = new JPanel();
         RacePanel.setLayout(new BoxLayout(RacePanel, BoxLayout.Y_AXIS));
@@ -96,6 +98,28 @@ public class Race
             }
         });
 
+        JMenu ViewRace = new JMenu("View");
+        JMenuItem fsView = new JMenuItem("FullScreen");
+        JMenuItem wwView = new JMenuItem("Window");
+        fsView.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+                RaceMenu.setSize((int) screenSize.getWidth(),(int) screenSize.getHeight());
+                RaceMenu.setExtendedState(JFrame.MAXIMIZED_BOTH);
+                RaceMenu.setUndecorated(true);
+            }
+        });
+        wwView.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                int Twidth = raceLength*11;
+                RaceMenu.setSize(Twidth,500);
+                RaceMenu.setLocationRelativeTo(null);
+            }
+        });
+
+        ViewRace.add(fsView);
+        ViewRace.add(wwView);
+        menuBar.add(ViewRace);
         CancelRace.add(cancelButton);
         menuBar.add(CancelRace);
         RaceMenu.setJMenuBar(menuBar);
@@ -282,7 +306,7 @@ public class Race
         RacePanel.setLayout(new BoxLayout(RacePanel, BoxLayout.Y_AXIS));
 
         Color textColor = AALibrary.getColorFromString(fontColour);
-        Font boldFont = new Font("Monospaced", Font.BOLD, 12);
+        Font boldFont = new Font("Monospaced", Font.BOLD, 14);
 
         // Top border
         JLabel topBorder = new JLabel(new String(new char[raceLength+3]).replace('\0', '='));

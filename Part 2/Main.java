@@ -10,6 +10,9 @@ public class Main {
     static RaceData previousData;
 
     public static void main(String[] args) {
+        GlobalStyler.applyGlobalStyle();
+
+
         MainMenu.showUI();
     }
 

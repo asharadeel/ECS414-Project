@@ -174,7 +174,8 @@ public class Better {
                     g.fillRect(0, 0, getWidth(), getHeight());
                 }
             }
-        };;
+        };
+
         horsePanel.setLayout(new BoxLayout(horsePanel, BoxLayout.Y_AXIS));
         horsePanel.setBorder(BorderFactory.createTitledBorder(horse.getSymbol() + " | " + horse.getName()));
 
@@ -339,7 +340,7 @@ public class Better {
         betsPanel.add(timePanel);
 
         // Save button with validation
-        JButton saveButton = new JButton("Save Bet for " + horse.getName());
+        JButton saveButton = new JButton("Lock Bet for " + horse.getName());
         saveButton.addActionListener(e -> {
             try {
                 BetProfile current = new BetProfile(user, new HorseData(horse));
@@ -389,7 +390,7 @@ public class Better {
                 }
 
                 int confirm = JOptionPane.showConfirmDialog(null,
-                        "Are you sure you want to save this bet?",
+                        "Are you sure you want to lock this bet?",
                         "Confirm Save",
                         JOptionPane.YES_NO_OPTION);
 
