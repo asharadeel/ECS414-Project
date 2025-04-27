@@ -92,13 +92,85 @@ public class User {
         // Create and configure the frame
         JFrame frame = new JFrame();
         frame.setTitle("User Data");
-        frame.setSize(600, 400);
+        frame.setSize(400, 400);
         frame.setLocationRelativeTo(null);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.setLayout(new BorderLayout(10, 10));
 
+        JPanel titlePanel = new JPanel() {
+            private Image backgroundImage;
+
+            {
+                try {
+                    backgroundImage = new ImageIcon("images/racingGrid.jpg").getImage();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (backgroundImage != null) {
+                    int imgWidth = backgroundImage.getWidth(this);
+                    int imgHeight = backgroundImage.getHeight(this);
+
+                    int tilesX = (int) Math.ceil((double) getWidth() / imgWidth);
+                    int tilesY = (int) Math.ceil((double) getHeight() / imgHeight);
+
+                    for (int y = 0; y < tilesY; y++) {
+                        for (int x = 0; x < tilesX; x++) {
+                            g.drawImage(backgroundImage, x * imgWidth, y * imgHeight, this);
+                        }
+                    }
+
+                    g.setColor(new Color(0, 0, 0, 200));
+                    g.fillRect(0, 0, getWidth(), getHeight());
+                }
+            }
+        };
+        titlePanel.setLayout(new BoxLayout(titlePanel, BoxLayout.Y_AXIS));
+
+        JLabel title = new JLabel("User History", SwingConstants.CENTER);
+        title.setFont(new Font("Arial", Font.BOLD, 32));
+        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        title.setForeground(Color.WHITE);
+        titlePanel.add(title);
+
         // Main panel with GridLayout
-        JPanel dataPanel = new JPanel(new GridLayout(4, 2, 10, 10));
+        JPanel dataPanel = new JPanel(new GridLayout(4, 2, 10, 10)){
+            private Image backgroundImage;
+
+            {
+                try {
+                    backgroundImage = new ImageIcon("images/mainMenuBackground.jpg").getImage();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (backgroundImage != null) {
+                    int imgWidth = backgroundImage.getWidth(this);
+                    int imgHeight = backgroundImage.getHeight(this);
+
+                    int tilesX = (int) Math.ceil((double) getWidth() / imgWidth);
+                    int tilesY = (int) Math.ceil((double) getHeight() / imgHeight);
+
+                    for (int y = 0; y < tilesY; y++) {
+                        for (int x = 0; x < tilesX; x++) {
+                            g.drawImage(backgroundImage, x * imgWidth, y * imgHeight, this);
+                        }
+                    }
+
+                    g.setColor(new Color(0, 0, 0, 200));
+                    g.fillRect(0, 0, getWidth(), getHeight());
+                }
+            }
+        };
+
         dataPanel.setBorder(BorderFactory.createEmptyBorder(20, 20, 20, 20));
 
         // Initialize data variables
@@ -131,13 +203,14 @@ public class User {
         // Create labels with styling
         Font labelFont = new Font("Arial", Font.BOLD, 16);
         Font valueFont = new Font("Arial", Font.PLAIN, 16);
-        Color labelColor = new Color(70, 70, 70);
+        Color labelColor = new Color(255,255,255);
 
         // Points
         JLabel pointsLabel = new JLabel("Points Earned:");
         pointsLabel.setFont(labelFont);
         pointsLabel.setForeground(labelColor);
         JLabel pointsValue = new JLabel(String.valueOf(pointsEarnt));
+        pointsValue.setForeground(labelColor);
         pointsValue.setFont(valueFont);
 
         // Bets Made
@@ -145,6 +218,7 @@ public class User {
         betsMadeLabel.setFont(labelFont);
         betsMadeLabel.setForeground(labelColor);
         JLabel betsMadeValue = new JLabel(String.valueOf(betsMade));
+        betsMadeValue.setForeground(labelColor);
         betsMadeValue.setFont(valueFont);
 
         // Bets Won
@@ -152,6 +226,7 @@ public class User {
         betsWonLabel.setFont(labelFont);
         betsWonLabel.setForeground(labelColor);
         JLabel betsWonValue = new JLabel(String.valueOf(betsWon));
+        betsWonValue.setForeground(labelColor);
         betsWonValue.setFont(valueFont);
 
         // Bets Lost
@@ -159,6 +234,7 @@ public class User {
         betsLostLabel.setFont(labelFont);
         betsLostLabel.setForeground(labelColor);
         JLabel betsLostValue = new JLabel(String.valueOf(betsLost));
+        betsLostValue.setForeground(labelColor);
         betsLostValue.setFont(valueFont);
 
         // Add to panel
@@ -179,6 +255,7 @@ public class User {
         buttonPanel.add(closeButton);
 
         // Add components to frame
+        frame.add(titlePanel,BorderLayout.NORTH);
         frame.add(dataPanel, BorderLayout.CENTER);
         frame.add(buttonPanel, BorderLayout.SOUTH);
 

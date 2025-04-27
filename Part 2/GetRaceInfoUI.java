@@ -334,6 +334,14 @@ public class GetRaceInfoUI {
         JMenu BackMenu = new JMenu("Back");
         JMenuItem RTMMButton = new JMenuItem("Return to Menu");
         RTMMButton.addActionListener(e -> {
+            outputArea.setText("");
+            Arrays.fill(finalHorses, null);
+            createdHorses = new Horse[0];
+            initializeModels();
+            laneDropdown.setModel(laneModel);
+            iconDropdown.setModel(iconModel);
+            nameField.setText("");
+            confidenceSlider.setValue(50);
             mainFrame.dispose();
             Main.RTMM();
         });

@@ -444,27 +444,59 @@ public class Race
         statsFrame.setLayout(new BorderLayout());
 
         // ==================== TITLE PANEL ====================
-        JPanel titlePanel = new JPanel();
+        JPanel titlePanel = new JPanel(){
+            private Image backgroundImage;
+
+            {
+                try {
+                    backgroundImage = new ImageIcon("images/racingGrid.jpg").getImage();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (backgroundImage != null) {
+                    int imgWidth = backgroundImage.getWidth(this);
+                    int imgHeight = backgroundImage.getHeight(this);
+
+                    int tilesX = (int) Math.ceil((double) getWidth() / imgWidth);
+                    int tilesY = (int) Math.ceil((double) getHeight() / imgHeight);
+
+                    for (int y = 0; y < tilesY; y++) {
+                        for (int x = 0; x < tilesX; x++) {
+                            g.drawImage(backgroundImage, x * imgWidth, y * imgHeight, this);
+                        }
+                    }
+
+                    g.setColor(new Color(0, 0, 0, 200));
+                    g.fillRect(0, 0, getWidth(), getHeight());
+                }
+            }
+        };
         titlePanel.setLayout(new BorderLayout());
         titlePanel.setPreferredSize(new Dimension(0, 100));
 
+
         JLabel titleLabel = new JLabel("Race Statistics", SwingConstants.CENTER);
         titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
-        titleLabel.setForeground(Color.BLACK);
+        titleLabel.setForeground(Color.WHITE);
         titleLabel.setOpaque(false);
         titlePanel.add(titleLabel, BorderLayout.CENTER);
 
         if(stats.getWinner() != null){
             JLabel winnerLabel = new JLabel("Winner: " + stats.getWinner().getName(), SwingConstants.CENTER);
             winnerLabel.setFont(new Font("Arial", Font.BOLD, 20));
-            winnerLabel.setForeground(Color.BLACK);
+            winnerLabel.setForeground(Color.WHITE);
             winnerLabel.setOpaque(false);
             titlePanel.add(winnerLabel, BorderLayout.SOUTH);
         }
         else{
             JLabel winnerLabel = new JLabel("There was no winner this game", SwingConstants.CENTER);
             winnerLabel.setFont(new Font("Arial", Font.BOLD, 12));
-            winnerLabel.setForeground(Color.BLACK);
+            winnerLabel.setForeground(Color.WHITE);
             winnerLabel.setOpaque(false);
             titlePanel.add(winnerLabel, BorderLayout.SOUTH);
         }

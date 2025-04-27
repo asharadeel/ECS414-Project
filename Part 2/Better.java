@@ -44,9 +44,42 @@ public class Better {
         frame.setLayout(new BorderLayout());
 
         // 1. Top Panel - Title
-        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+        JPanel topPanel = new JPanel(new FlowLayout(FlowLayout.CENTER)){
+            private Image backgroundImage;
+
+            {
+                try {
+                    backgroundImage = new ImageIcon("images/racingGrid.jpg").getImage();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (backgroundImage != null) {
+                    int imgWidth = backgroundImage.getWidth(this);
+                    int imgHeight = backgroundImage.getHeight(this);
+
+                    int tilesX = (int) Math.ceil((double) getWidth() / imgWidth);
+                    int tilesY = (int) Math.ceil((double) getHeight() / imgHeight);
+
+                    for (int y = 0; y < tilesY; y++) {
+                        for (int x = 0; x < tilesX; x++) {
+                            g.drawImage(backgroundImage, x * imgWidth, y * imgHeight, this);
+                        }
+                    }
+
+                    g.setColor(new Color(0, 0, 0, 200));
+                    g.fillRect(0, 0, getWidth(), getHeight());
+                }
+            }
+        };
+
         JLabel titleLabel = new JLabel("GAMBLR");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
+        titleLabel.setForeground(new Color(255, 255, 255));
         topPanel.add(titleLabel);
         frame.add(topPanel, BorderLayout.NORTH);
 
@@ -110,21 +143,56 @@ public class Better {
     }
 
     private JPanel createHorseBettingPanel(Horse horse, JPanel parentPanel) {
-        JPanel horsePanel = new JPanel();
+        JPanel horsePanel = new JPanel(){
+            private Image backgroundImage;
+
+            {
+                try {
+                    backgroundImage = new ImageIcon("images/horseBack.jpg").getImage();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (backgroundImage != null) {
+                    int imgWidth = backgroundImage.getWidth(this);
+                    int imgHeight = backgroundImage.getHeight(this);
+
+                    int tilesX = (int) Math.ceil((double) getWidth() / imgWidth);
+                    int tilesY = (int) Math.ceil((double) getHeight() / imgHeight);
+
+                    for (int y = 0; y < tilesY; y++) {
+                        for (int x = 0; x < tilesX; x++) {
+                            g.drawImage(backgroundImage, x * imgWidth, y * imgHeight, this);
+                        }
+                    }
+
+                    g.setColor(new Color(255, 255, 255, 150));
+                    g.fillRect(0, 0, getWidth(), getHeight());
+                }
+            }
+        };;
         horsePanel.setLayout(new BoxLayout(horsePanel, BoxLayout.Y_AXIS));
         horsePanel.setBorder(BorderFactory.createTitledBorder(horse.getSymbol() + " | " + horse.getName()));
 
         // Main panel for all bet types
         JPanel betsPanel = new JPanel();
         betsPanel.setLayout(new GridLayout(3, 1, 5, 5));
-
+        betsPanel.setOpaque(false);
         // Create components for each bet type
         // Distance
         JPanel distancePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
         distancePanel.add(new JLabel("Distance:"));
+        distancePanel.setOpaque(false);
         JRadioButton distanceNone = new JRadioButton("None", true); // Default selected
+        distanceNone.setOpaque(false);
         JRadioButton distanceValue = new JRadioButton("Value");
+        distanceValue.setOpaque(false);
         JRadioButton distanceRegion = new JRadioButton("Region");
+        distanceRegion.setOpaque(false);
         ButtonGroup distanceGroup = new ButtonGroup();
         distanceGroup.add(distanceNone);
         distanceGroup.add(distanceValue);
@@ -135,6 +203,7 @@ public class Better {
 
         // Distance input panel
         JPanel distanceInputPanel = new JPanel();
+        distanceInputPanel.setOpaque(false);
         distanceInputPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         JTextField distanceSingleField = new JTextField(5);
         JTextField distanceMinField = new JTextField(5);
@@ -143,10 +212,14 @@ public class Better {
 
         // Speed
         JPanel speedPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        speedPanel.setOpaque(false);
         speedPanel.add(new JLabel("Average Speed:"));
-        JRadioButton speedNone = new JRadioButton("None", true); // Default selected
+        JRadioButton speedNone = new JRadioButton("None", true);
+        speedNone.setOpaque(false);
         JRadioButton speedValue = new JRadioButton("Value");
+        speedValue.setOpaque(false);
         JRadioButton speedRegion = new JRadioButton("Region");
+        speedRegion.setOpaque(false);
         ButtonGroup speedGroup = new ButtonGroup();
         speedGroup.add(speedNone);
         speedGroup.add(speedValue);
@@ -157,6 +230,7 @@ public class Better {
 
         // Speed input panel
         JPanel speedInputPanel = new JPanel();
+        speedInputPanel.setOpaque(false);
         speedInputPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         JTextField speedSingleField = new JTextField(5);
         JTextField speedMinField = new JTextField(5);
@@ -165,10 +239,14 @@ public class Better {
 
         // Time
         JPanel timePanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+        timePanel.setOpaque(false);
         timePanel.add(new JLabel("Time:"));
-        JRadioButton timeNone = new JRadioButton("None", true); // Default selected
+        JRadioButton timeNone = new JRadioButton("None", true);
+        timeNone.setOpaque(false);
         JRadioButton timeValue = new JRadioButton("Value");
+        timeValue.setOpaque(false);
         JRadioButton timeRegion = new JRadioButton("Region");
+        timeRegion.setOpaque(false);
         ButtonGroup timeGroup = new ButtonGroup();
         timeGroup.add(timeNone);
         timeGroup.add(timeValue);
@@ -179,6 +257,7 @@ public class Better {
 
         // Time input panel
         JPanel timeInputPanel = new JPanel();
+        timeInputPanel.setOpaque(false);
         timeInputPanel.setLayout(new FlowLayout(FlowLayout.LEFT));
         JTextField timeSingleField = new JTextField(5);
         JTextField timeMinField = new JTextField(5);
@@ -380,9 +459,42 @@ public class Better {
         betReviewFrame.setLayout(new BorderLayout());
 
         // ===== 1. TITLE PANEL =====
-        JPanel titlePanel = new JPanel();
+        JPanel titlePanel = new JPanel() {
+            private Image backgroundImage;
+
+            {
+                try {
+                    backgroundImage = new ImageIcon("images/racingGrid.jpg").getImage();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+            @Override
+            protected void paintComponent(Graphics g) {
+                super.paintComponent(g);
+                if (backgroundImage != null) {
+                    int imgWidth = backgroundImage.getWidth(this);
+                    int imgHeight = backgroundImage.getHeight(this);
+
+                    int tilesX = (int) Math.ceil((double) getWidth() / imgWidth);
+                    int tilesY = (int) Math.ceil((double) getHeight() / imgHeight);
+
+                    for (int y = 0; y < tilesY; y++) {
+                        for (int x = 0; x < tilesX; x++) {
+                            g.drawImage(backgroundImage, x * imgWidth, y * imgHeight, this);
+                        }
+                    }
+
+                    g.setColor(new Color(0, 0, 0, 200));
+                    g.fillRect(0, 0, getWidth(), getHeight());
+                }
+            }
+        };
+
         JLabel titleLabel = new JLabel("BET REVIEW");
         titleLabel.setFont(new Font("Arial", Font.BOLD, 32));
+        titleLabel.setForeground(Color.white);
         titlePanel.add(titleLabel);
         betReviewFrame.add(titlePanel, BorderLayout.NORTH);
 
