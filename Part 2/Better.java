@@ -526,7 +526,6 @@ public class Better {
             for (HorseData x : FinalHorses) {
                 if (bet.getHorseData().getSymbol() == x.getSymbol()) {
                     bet.setHorse(x);
-                    bet.valid();
                     break;
                 }
             }
@@ -611,7 +610,6 @@ public class Better {
                 if(x != null) {
                     if (bet.getHorseData().getSymbol() == x.getSymbol()) {
                         bet.setHorse(x);
-                        bet.valid();
                         break; // No need to check further once matched
                     }
                 }
@@ -662,6 +660,9 @@ public class Better {
         }
     }
 
+    /**
+     * Update the user to reward points and update bets won/lost values
+     */
     private void UpdateUser(){
         System.out.println(" ##### USER UPDATED! #### ");
         try {

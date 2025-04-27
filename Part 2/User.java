@@ -12,28 +12,76 @@ public class User {
     private int betsLost = 0;
     private int pointsEarnt = 0;
 
+    //FILE
     private static String filename = "user.csv";
 
-    public void addPoints(int x) {
-        pointsEarnt += x;
-        System.out.println(pointsEarnt);
-    }
 
-    // Default constructor
+    /**
+     * Create User Default
+     */
     public User() {}
 
-    // Constructor with initialization
+    /**
+     * Initialise user (mainly for save function to fetch user before rewritng data)
+     * @param betsWon - bets won history
+     * @param betsLost - bets lost history
+     * @param pointsEarnt - total points
+     */
     public User(int betsWon, int betsLost, int pointsEarnt) {
         this.betsWon = betsWon;
         this.betsLost = betsLost;
         this.pointsEarnt = pointsEarnt;
     }
 
-    // Getters
+    //  ACCESSORS
+    /**
+     * Get the total bets made (bets won + bets lost)
+     * @return
+     */
     public int getBetsMade() { return betsWon + betsLost; }
+
+    /**
+     * Get the total bets won
+     * @return
+     */
     public int getBetsWon() { return betsWon; }
+
+    /**
+     * get the total bets lost
+     * @return
+     */
     public int getBetsLost() { return betsLost; }
+
+    /**
+     * Get the total points earnt by the user
+     * @return
+     */
     public int getPointsEarnt() { return pointsEarnt; }
+
+
+    // MUTATORS (SETTERS)
+
+    /**
+     * Add user points for when bet is won
+     * @param x - points to add
+     */
+    public void addPoints(int x) {
+        pointsEarnt += x;
+    }
+
+    /**
+     * Increment for bet won
+     */
+    public void addBetWon() {
+        this.betsWon++;
+    }
+
+    /**
+     * Increment for bet lost
+     */
+    public void addBetsLost() {
+        this.betsLost++;
+    }
 
     /**
      * Fetches user data from file and returns as User object
@@ -80,14 +128,10 @@ public class User {
         }
     }
 
-    public void addBetWon() {
-        this.betsWon++;
-    }
 
-    public void addBetsLost() {
-        this.betsLost++;
-    }
-
+    /**
+     * Show user data when the history -> user is pressed in main menu bar.
+     */
     public static void ShowUser() {
         // Create and configure the frame
         JFrame frame = new JFrame();

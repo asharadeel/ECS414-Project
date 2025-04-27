@@ -7,7 +7,6 @@ public class BetProfile {
 
     //DECLARE THE HORSE TO BE SAVED
     private HorseData horse;
-    private boolean valid = false;
     //BET VALUES
     private int expectedTime = 0;
     private int expectedAvg = 0;
@@ -29,6 +28,24 @@ public class BetProfile {
         this.horse = h;
     }
 
+    /**
+     * Retrieve the horsedata in this bet profile
+     * @return horse data
+     */
+    public HorseData getHorseData(){
+        return horse;
+    }
+
+    /**
+     * Set the horsedata for this bet profile (the horse that is bet upon)
+     * @param h
+     */
+    public void setHorse(HorseData h){
+        this.horse = h;
+    }
+
+
+    // =================== PLACE BETS ===================
     /**
      * Bet on the minimum distance ran by horse
      * @param d
@@ -83,6 +100,7 @@ public class BetProfile {
         expectedAvgR[1] = e;
     }
 
+    // =================== REVIEW BETS ===================
     /**
      * Check if the average speed check was successful
      * - if horses speed was MORE than the expected, then win, else fail.
@@ -167,19 +185,14 @@ public class BetProfile {
 
 
 
-    public HorseData getHorseData(){
-        return horse;
-    }
+    // =================== RETRIEVE BETS DATA ===================
 
-    public void setHorse(HorseData h){
-        this.horse = h;
-    }
-
-    public void valid(){
-        this.valid = true;
-    }
-
-
+    /**
+     * Return the bets made for time
+     * - will check which type of bet is made (value or region)
+     * - will return based on which value is set to 0.
+     * @return
+     */
     public int[] GetTimeBets() {
         if (expectedTimeR[0] != 0 || expectedTimeR[1] != 0) {
             return expectedTimeR; // Return the range if it exists
@@ -190,6 +203,12 @@ public class BetProfile {
         }
     }
 
+    /**
+     * Return the bets made for distance ran
+     * - will check which type of bet is made (value or region)
+     * - will return based on which value is set to 0.
+     * @return
+     */
     public int[] GetDistanceBets() {
         if (expectedDistanceR[0] != 0 || expectedDistanceR[1] != 0) {
             return expectedDistanceR;
@@ -200,6 +219,12 @@ public class BetProfile {
         }
     }
 
+    /**
+     * Return the bets made for average speeed
+     * - will check which type of bet is made (value or region)
+     * - will return based on which value is set to 0.
+     * @return
+     */
     public int[] GetAverageSpeed() {
         if (expectedAvgR[0] != 0 || expectedAvgR[1] != 0) {
             return expectedAvgR;
@@ -209,5 +234,4 @@ public class BetProfile {
             return new int[]{-1};
         }
     }
-
 }

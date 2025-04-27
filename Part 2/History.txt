@@ -1403,3 +1403,23 @@ HORSE STATISTICS:
 ---------------------------------
 END OF RACE
 ###############################################################
+
+
+
+###############################################################
+GAME - 16:41:40 - 27:04:2025
+---------------------------------
+Winner: ♕ | hadg
+
+HORSE STATISTICS:
+---------------------------------
+♚ | bvcxg           | Lane: 6 | Distance: 1m | Speed: 10.00km/h | Time: 5.00s
+♗ | hsfh            | Lane: 4 | Distance: 3m | Speed: 4.50km/h | Time: 33.00s
+♜ | asg             | Lane: 8 | Distance: 47m | Speed: 3.50km/h | Time: 627.00s
+♖ | sfaf            | Lane: 3 | Distance: 43m | Speed: 2.50km/h | Time: 842.00s
+♞ | asf             | Lane: 10 | Distance: 63m | Speed: 3.00km/h | Time: 1059.00s
+♔ | asgar           | Lane: 1 | Distance: 56m | Speed: 2.50km/h | Time: 1120.00s
+♕ | hadg            | Lane: 2 | Distance: 83m | Speed: 2.00km/h | Time: 1901.00s
+---------------------------------
+END OF RACE
+###############################################################

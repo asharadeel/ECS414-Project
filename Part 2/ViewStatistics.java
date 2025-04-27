@@ -7,24 +7,36 @@ import java.util.List;
 import org.knowm.xchart.style.markers.SeriesMarkers;
 import org.knowm.xchart.*;
 
+/**
+ * The statistic analyser post game - UI and graphs
+ * @author ashar
+ * @version 1.0
+ */
 public class ViewStatistics {
+    //DECLARATIONS
     private GameStatistics stats;
     private JFrame window;
     private JPanel panel;
-
     private JComboBox<String> horseDropdown;
 
+    /**
+     * Constructor for this class
+     * @param stats - data to make graphs from
+     */
     ViewStatistics(GameStatistics stats) {
         this.stats = stats;
     }
 
+
+    /**
+     * Show initial Ui where user can select which graph to view
+     */
     public void showUI() {
         window = new JFrame("Statistical Review");
         window.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         window.setSize(900, 400);
         window.setLocationRelativeTo(null);
 
-        // Create the panel and set layout to BorderLayout
         panel = new JPanel(){
             private Image backgroundImage;
 
@@ -60,27 +72,22 @@ public class ViewStatistics {
 
         panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
 
-        // Create the title label and set font size
         JLabel title = new JLabel("Statistical Review", SwingConstants.CENTER);
         title.setFont(new Font("Arial", Font.BOLD, 32));  // Set title font size to 32
         title.setAlignmentX(Component.CENTER_ALIGNMENT); // Center title horizontally
-
-        // Create the caption label and set font size
         JLabel caption = new JLabel("Press the View option to select table", SwingConstants.CENTER);
         caption.setFont(new Font("Arial", Font.PLAIN, 20));  // Set caption font size to 20
         caption.setAlignmentX(Component.CENTER_ALIGNMENT); // Center caption horizontally
 
-        // Add title and caption to the panel
         panel.add(title);
         panel.add(caption);
 
-        // Center the content vertically
         panel.add(Box.createVerticalGlue());
         panel.add(Box.createVerticalStrut(50));
 
         window.add(panel);
 
-
+        //MENU HANDLING
         JMenuBar menuBar = new JMenuBar();
         JMenu viewOptions = new JMenu("View");
 
@@ -100,19 +107,19 @@ public class ViewStatistics {
             }
         });
 
-
         viewOptions.add(viewDvT);
         viewOptions.add(viewSvT);
 
         menuBar.add(viewOptions);
         window.setJMenuBar(menuBar);
-
-
         window.setVisible(true);
     }
 
+
+    /**
+     * Open Distance vs time graph
+     */
     private void OpenDistanceVTime() {
-        // Get the horse data
         HorseData[] horses = stats.getHorses();
         if (horses == null || horses.length == 0) return;
 
@@ -125,7 +132,6 @@ public class ViewStatistics {
                 .yAxisTitle("Time (s)")
                 .build();
 
-        // Set manual axis bounds
         chart.getStyler().setXAxisMin(0.0);
         chart.getStyler().setXAxisMax((double) stats.getRaceLength());
         chart.getStyler().setYAxisMin(0.0);
@@ -140,19 +146,19 @@ public class ViewStatistics {
             series.setLineWidth(2.0f);  // Thicker line
         }
 
-
         panel.removeAll();
         panel.add(new XChartPanel<>(chart));
         panel.revalidate();
         panel.repaint();
     }
 
+    /**
+     * Open average speed vs time graph
+     */
     private void OpenSpeedVTime() {
-        // Get the horse data
         HorseData[] horses = stats.getHorses();
         if (horses == null || horses.length == 0) return;
 
-        // Create the chart
         XYChart chart = new XYChartBuilder()
                 .width(800)
                 .height(300)
@@ -161,7 +167,6 @@ public class ViewStatistics {
                 .yAxisTitle("Time (s)")
                 .build();
 
-        // Set manual axis bounds
         chart.getStyler().setXAxisMin(0.0);
         chart.getStyler().setXAxisMax(50.0);
         chart.getStyler().setYAxisMin(0.0);
@@ -175,7 +180,6 @@ public class ViewStatistics {
             series.setMarker(SeriesMarkers.CIRCLE);
             series.setLineWidth(2.0f);
         }
-
 
         panel.removeAll();
         panel.add(new XChartPanel<>(chart));
