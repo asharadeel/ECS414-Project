@@ -40,3 +40,70 @@ HORSE STATISTICS:
 ---------------------------------
 END OF RACE
 ###############################################################
+
+
+
+###############################################################
+GAME - 23:20:52 - 27:04:2025
+---------------------------------
+No winner - all horses fell!
+
+HORSE STATISTICS:
+---------------------------------
+♕ | khadija         | Lane: 2 | Distance: 4m | Speed: 2.00km/h | Time: 101.00s
+♘ | dejo            | Lane: 5 | Distance: 7m | Speed: 2.50km/h | Time: 134.00s
+♞ | aarush          | Lane: 10 | Distance: 17m | Speed: 3.00km/h | Time: 309.00s
+♝ | tahrim          | Lane: 9 | Distance: 18m | Speed: 2.50km/h | Time: 338.00s
+♚ | peth            | Lane: 6 | Distance: 17m | Speed: 2.50km/h | Time: 365.00s
+♖ | sara            | Lane: 3 | Distance: 13m | Speed: 1.50km/h | Time: 392.00s
+♛ | lakshima        | Lane: 7 | Distance: 11m | Speed: 1.50km/h | Time: 416.00s
+♜ | huma            | Lane: 8 | Distance: 41m | Speed: 3.00km/h | Time: 657.00s
+♔ | ashar           | Lane: 1 | Distance: 43m | Speed: 2.00km/h | Time: 1100.00s
+♗ | adele           | Lane: 4 | Distance: 45m | Speed: 2.00km/h | Time: 1143.00s
+---------------------------------
+END OF RACE
+###############################################################
+
+
+
+###############################################################
+GAME - 23:22:13 - 27:04:2025
+---------------------------------
+Winner: ♝ | tahrim
+
+HORSE STATISTICS:
+---------------------------------
+♜ | huma            | Lane: 8 | Distance: 1m | Speed: 3.00km/h | Time: 17.00s
+♔ | ashar           | Lane: 1 | Distance: 10m | Speed: 2.00km/h | Time: 240.00s
+♚ | peth            | Lane: 6 | Distance: 22m | Speed: 3.50km/h | Time: 325.00s
+♗ | adele           | Lane: 4 | Distance: 24m | Speed: 2.50km/h | Time: 493.00s
+♞ | aarush          | Lane: 10 | Distance: 30m | Speed: 2.50km/h | Time: 559.00s
+♕ | khadija         | Lane: 2 | Distance: 31m | Speed: 2.50km/h | Time: 611.00s
+♖ | sara            | Lane: 3 | Distance: 31m | Speed: 2.00km/h | Time: 722.00s
+♘ | dejo            | Lane: 5 | Distance: 45m | Speed: 2.00km/h | Time: 1004.00s
+♝ | tahrim          | Lane: 9 | Distance: 82m | Speed: 2.00km/h | Time: 2198.00s
+---------------------------------
+END OF RACE
+###############################################################
+
+
+
+###############################################################
+GAME - 23:22:54 - 27:04:2025
+---------------------------------
+Winner: ♗ | adele
+
+HORSE STATISTICS:
+---------------------------------
+♝ | tahrim          | Lane: 9 | Distance: 8m | Speed: 2.50km/h | Time: 148.00s
+♕ | khadija         | Lane: 2 | Distance: 12m | Speed: 3.50km/h | Time: 181.00s
+♞ | aarush          | Lane: 10 | Distance: 13m | Speed: 3.00km/h | Time: 209.00s
+♜ | huma            | Lane: 8 | Distance: 17m | Speed: 3.00km/h | Time: 307.00s
+♔ | ashar           | Lane: 1 | Distance: 16m | Speed: 2.50km/h | Time: 320.00s
+♛ | lakshima        | Lane: 7 | Distance: 11m | Speed: 1.50km/h | Time: 326.00s
+♘ | dejo            | Lane: 5 | Distance: 19m | Speed: 2.00km/h | Time: 484.00s
+♖ | sara            | Lane: 3 | Distance: 20m | Speed: 1.50km/h | Time: 732.00s
+♗ | adele           | Lane: 4 | Distance: 82m | Speed: 2.50km/h | Time: 1643.00s
+---------------------------------
+END OF RACE
+###############################################################

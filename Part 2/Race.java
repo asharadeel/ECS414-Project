@@ -137,7 +137,6 @@ public class Race
             }
         }
 
-        // Create a Swing Timer for animation
         RaceTimer = new Timer(100, new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 boolean finished = false;
@@ -411,6 +410,7 @@ public class Race
         if(Winner != (null)) { //not always a winner
             double factor = Math.round(Math.random() * 0.1 * 100.0) / 100.0;
             double winnersConf = Winner.getConfidence() + factor; //slight increase
+            winnersConf = Math.min(0.99, winnersConf);  //cap
             Winner.setConfidence(winnersConf);
         }
 
@@ -418,6 +418,7 @@ public class Race
             if(x != Winner && x != null) {
                 double factor = Math.round(Math.random() * 0.1 * 100.0) / 100.0;
                 double losersConf = x.getConfidence() - factor;
+                losersConf = Math.max(0.01, losersConf);
                 x.setConfidence(losersConf);
             }
         }

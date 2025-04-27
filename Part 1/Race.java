@@ -275,7 +275,6 @@ public class Race
      * Method to execute at the end of any race
      * @param RaceHorses
      */
-
     private void FinishedRace(Horse[] RaceHorses){
         //Reset horses
         for (Horse x : RaceHorses) {
